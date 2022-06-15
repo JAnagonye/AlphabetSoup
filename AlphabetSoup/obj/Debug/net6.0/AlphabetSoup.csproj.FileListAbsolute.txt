@@ -1,0 +1,15 @@
+C:\Users\JBahn\OneDrive - KNEX\Desktop\Projects\AlphabetSoup\AlphabetSoup\bin\Debug\net6.0\AlphabetSoup.exe
+C:\Users\JBahn\OneDrive - KNEX\Desktop\Projects\AlphabetSoup\AlphabetSoup\bin\Debug\net6.0\AlphabetSoup.deps.json
+C:\Users\JBahn\OneDrive - KNEX\Desktop\Projects\AlphabetSoup\AlphabetSoup\bin\Debug\net6.0\AlphabetSoup.runtimeconfig.json
+C:\Users\JBahn\OneDrive - KNEX\Desktop\Projects\AlphabetSoup\AlphabetSoup\bin\Debug\net6.0\AlphabetSoup.dll
+C:\Users\JBahn\OneDrive - KNEX\Desktop\Projects\AlphabetSoup\AlphabetSoup\bin\Debug\net6.0\AlphabetSoup.pdb
+C:\Users\JBahn\OneDrive - KNEX\Desktop\Projects\AlphabetSoup\AlphabetSoup\obj\Debug\net6.0\AlphabetSoup.csproj.AssemblyReference.cache
+C:\Users\JBahn\OneDrive - KNEX\Desktop\Projects\AlphabetSoup\AlphabetSoup\obj\Debug\net6.0\AlphabetSoup.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\JBahn\OneDrive - KNEX\Desktop\Projects\AlphabetSoup\AlphabetSoup\obj\Debug\net6.0\AlphabetSoup.AssemblyInfoInputs.cache
+C:\Users\JBahn\OneDrive - KNEX\Desktop\Projects\AlphabetSoup\AlphabetSoup\obj\Debug\net6.0\AlphabetSoup.AssemblyInfo.cs
+C:\Users\JBahn\OneDrive - KNEX\Desktop\Projects\AlphabetSoup\AlphabetSoup\obj\Debug\net6.0\AlphabetSoup.csproj.CoreCompileInputs.cache
+C:\Users\JBahn\OneDrive - KNEX\Desktop\Projects\AlphabetSoup\AlphabetSoup\obj\Debug\net6.0\AlphabetSoup.dll
+C:\Users\JBahn\OneDrive - KNEX\Desktop\Projects\AlphabetSoup\AlphabetSoup\obj\Debug\net6.0\refint\AlphabetSoup.dll
+C:\Users\JBahn\OneDrive - KNEX\Desktop\Projects\AlphabetSoup\AlphabetSoup\obj\Debug\net6.0\AlphabetSoup.pdb
+C:\Users\JBahn\OneDrive - KNEX\Desktop\Projects\AlphabetSoup\AlphabetSoup\obj\Debug\net6.0\AlphabetSoup.genruntimeconfig.cache
+C:\Users\JBahn\OneDrive - KNEX\Desktop\Projects\AlphabetSoup\AlphabetSoup\obj\Debug\net6.0\ref\AlphabetSoup.dll
