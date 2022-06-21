@@ -2,55 +2,33 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
-//For accessing the Database, have to log into Docker(DOWNLOADED it through Docker and docker compose command https://medevel.com/tutorial-install-couchdb-with-docker/) and access the admin
 class App
 {
     static HttpClient client = new HttpClient();
 
-    async void setUp() //(HttpContent? content)
-    {
-        //object res = await client.PostAsync("127.0.0.1:5984/alphabetsoup/_design/getalldata/_view/get-all-data", content);
-        var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:5984/alphabetsoup/_design/getAllData/_view/get-all-data");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Basic", "YWRtaW46WU9VUlBBU1NXT1JE");
-        try
-        {
-            HttpResponseMessage res = await client.SendAsync(request);
-            //HttpResponseMessage response = await client.GetAsync("http://localhost:5984/alphabetsoup/_design/getAllData/_view/get-all-data");
-            res.EnsureSuccessStatusCode();
-            string responseBody = await res.Content.ReadAsStringAsync();
-            Console.WriteLine(responseBody);
-        }
-        catch (HttpRequestException e)
-        {
-            Console.WriteLine("\nException Caught!");
-            Console.WriteLine("Message :{0} ", e.Message);
-        }
-    }
     private class Soup
     {
-        public string? Acryonym { get; set; }
+        public string? Acronym { get; set; }
         public string? FullName { get; set; }
         public string? Description { get; set; }
-        
+    }      
 
-    }
-    async void postToDB(HttpContent? content)
+    static void Main(string[] args)
     {
-        await client.PostAsync("http://localhost:5984/alphabetsoup/_design/getAllData/_view/get-all-data", content);
-    }
-    static Task Main(string[] args)
-    {
-        App nApp = new App();
         Console.WriteLine("Welcome to the Alphabet Soup Application");
         string? inputStr = "";
         bool mainScreen = true;
         bool running = true;
-        string? acryonym;
+        string? acronym;
         string? fullName;
         string? desc;
-        //string? searchInput;
-        
+        string? searchInput;
+        string? mainInput;
+        string? deleteInput;
+        string? editInput;
+
         while (running)
         {
             if (mainScreen)
@@ -61,30 +39,26 @@ class App
                 Console.WriteLine("3- Edit");
                 Console.WriteLine("4- Search");
                 inputStr = Console.ReadLine();
-
                 mainScreen = false;
             }
             switch (inputStr)
             {
                 case "1":
                     Console.WriteLine("Input the Acryonym");
-                    acryonym = Console.ReadLine();
+                    acronym = Console.ReadLine();
                     Console.WriteLine("Input the Full Name");
                     fullName = Console.ReadLine();
                     Console.WriteLine("Input the Description");
                     desc = Console.ReadLine();
-                    
                     var soup = new Soup
                     {
-                        Acryonym = acryonym,
+                        Acronym = acronym,
                         FullName = fullName,
                         Description = desc
                     };
-                    string jsonSoup = JsonSerializer.Serialize<Soup>(soup);
-                    //postToDB(JsonSerializer.Serialize<Soup>(soup));
-                    Console.WriteLine(jsonSoup);
+                    PostToDB(JsonContent.Create<Soup>(soup));
                     Console.WriteLine("It has been saved! Here's what you can do: ");
-                    Console.WriteLine($"Here's what you've inputed for Acryonym: {acryonym}");
+                    Console.WriteLine($"Here's what you've inputed for Acronym: {acronym}");
                     Console.WriteLine($"Here's what you've inputed for the Full Name: {fullName}");
                     Console.WriteLine($"Here's what you've inputed for the Description: {desc}");
                     Console.WriteLine("It has been saved! Here's what you can do: ");
@@ -92,37 +66,86 @@ class App
                     break;
                 case "2":
                     Console.WriteLine("Search for the Deletion");
-                    //TODO: Search Function
-                    //TODO: Delete Function
+                    deleteInput = Console.ReadLine();
+                    Search(deleteInput);
+                    Console.WriteLine("Input the ID");
+                    deleteInput = Console.ReadLine();
+                    Delete(deleteInput);
                     Console.WriteLine("Delete Completed");
                     mainScreen = true;
                     break;
                 case "3":
                     Console.WriteLine("Search for the acryonym to be Edited");
-                    //TODO: Search Function
-                    //TODO: Make a decision on rewrite, or to pick a specific part to edit
+                    Console.WriteLine("1- Edit the Acronym ");
+                    Console.WriteLine("2- Delete");
+                    Console.WriteLine("3- Edit");
+                    editInput = Console.ReadLine();
+                    switch (editInput)
+                    {
+                        case "1":
+                            Edit(editInput);
+                            break;
+                        case "2":
+                            break;
+                        case "3":
+                            break;
+                    }
                     Console.WriteLine("Editing Complete!");
                     mainScreen = true;
                     break;
                 case "4":
-                    Console.WriteLine("Search");
-                    //searchInput = Console.ReadLine();
-                    //SearchFunction
-                    //searchInput = Console.ReadLine();
-                    mainScreen = true;
+                    Console.WriteLine("Search for the Acronym. Type 'main' to go to the main screen.");
+                    searchInput = Console.ReadLine();
+                    Search(searchInput);
+                    mainInput = Console.ReadLine();
+                    if (mainInput == "main")
+                    {
+                        mainScreen = true;
+                    }
                     break;
             }
             if (inputStr == "exit")
             {
                 running = false;
-                nApp.setUp();
             }
         }
-
-        return Task.CompletedTask;
     }
 
     static void Search(string? search)
+    {
+        string selectorJSON = @"{
+        ""selector"": {
+            ""acronym"": { 
+                ""$regex"": " + $"\"{search}\"" + 
+            @"}
+        },
+        ""fields"": [
+            ""_id""
+            ""acronym"", 
+            ""fullName"", 
+            ""description""
+            ]
+        }";
+        StringContent selector = new StringContent(selectorJSON);
+        selector.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+        client.DefaultRequestHeaders.Add("Authorization", "Basic YWRtaW46WU9VUlBBU1NXT1JE");
+        Task<HttpResponseMessage> searchTask = client.PostAsync("http://localhost:5984/alphabetsoup/_find", selector);
+        Console.WriteLine(searchTask.Result.Content.ReadAsStringAsync().Result) ;
+    }
+
+    static void PostToDB(HttpContent content)
+    {
+        Guid g = Guid.NewGuid();
+        client.DefaultRequestHeaders.Add("Authorization", "Basic YWRtaW46WU9VUlBBU1NXT1JE");
+        HttpResponseMessage nTask = client.PutAsync($"http://localhost:5984/alphabetsoup/{g}", content).Result;
+    }
+
+    static void Delete(string? delete)
+    {
+
+    }
+
+    static void Edit(string? edit)
     {
 
     }
