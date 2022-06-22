@@ -1,6 +1,9 @@
-﻿public interface ISoup
+﻿namespace AlphabetSoup
 {
-    string? Acronym { get; set; }
-    string? Description { get; set; }
-    string? FullName { get; set; }
+    public interface ISoup
+    {
+        string? Acronym { get; set; }
+        string? Description { get; set; }
+        string? FullName { get; set; }
+    }
 }

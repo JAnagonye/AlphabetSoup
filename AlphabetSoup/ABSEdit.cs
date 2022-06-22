@@ -1,30 +1,34 @@
 ﻿using System;
 
-public class ABSEdit
+namespace AlphabetSoup
 {
-	HttpClient client;
-	public ABSEdit(HttpClient client)
+    public class ABSEdit
     {
-        this.client = client;
-    }
-
-    public void Edit()
-    {
-        Console.WriteLine("Search for the acryonym to be Edited");
-        Console.WriteLine("1- Edit the Acronym ");
-        Console.WriteLine("2- Edit the Full Name");
-        Console.WriteLine("3- Edit the Descripton");
-        editInput = Console.ReadLine();
-        switch (editInput)
+        HttpClient client;
+        string? editInput;
+        public ABSEdit(HttpClient client)
         {
-            case "1":
-                Edit(editInput);
-                break;
-            case "2":
-                break;
-            case "3":
-                break;
+            this.client = client;
+            editInput = "";
         }
-        Console.WriteLine("Editing Complete!");
+
+        public void Edit()
+        {
+            Console.WriteLine("Search for the acryonym to be Edited");
+            Console.WriteLine("1- Edit the Acronym ");
+            Console.WriteLine("2- Edit the Full Name");
+            Console.WriteLine("3- Edit the Descripton");
+            editInput = Console.ReadLine();
+            switch (editInput)
+            {
+                case "1":
+                    break;
+                case "2":
+                    break;
+                case "3":
+                    break;
+            }
+            Console.WriteLine("Editing Complete!");
+        }
     }
 }
