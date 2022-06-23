@@ -26,7 +26,7 @@ namespace AlphabetSoup.UnitTest
                 mock.Mock<ISearchService>()
                     .Setup(x => x.Search("TestAcronym"))
                     .Returns(GetAcronym);
-                var ctlr = mock.Create<CouchDBSearch>;
+                var ctlr = mock.Create<ISearchService>;
                 var expected = GetAcronym();
 
                 var actual = ctlr.Search();
