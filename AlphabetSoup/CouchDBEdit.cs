@@ -2,11 +2,11 @@
 
 namespace AlphabetSoup
 {
-    public class ABSEdit
+    public class CouchDBEdit
     {
         HttpClient client;
         string? editInput;
-        public ABSEdit(HttpClient client)
+        public CouchDBEdit(HttpClient client)
         {
             this.client = client;
             editInput = "";

@@ -2,11 +2,11 @@
 
 namespace AlphabetSoup
 {
-    public class ABSDelete
+    public class CouchDBDelete
     {
         HttpClient client;
         string? deleteInput;
-        public ABSDelete(HttpClient client)
+        public CouchDBDelete(HttpClient client)
         {
             this.client = client;
             deleteInput = "";

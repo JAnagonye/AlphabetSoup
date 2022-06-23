@@ -4,15 +4,16 @@ using System.Text.Json.Serialization;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
-namespace{
-    class AlphabetSoupApp
+namespace AlphabetSoup
+{
+    internal sealed class AlphabetSoupApp
     {
         static HttpClient client = new HttpClient();
 
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to the Alphabet Soup Application");
-            string? inputStr = "";
+            string inputStr = "";
             bool mainScreen = true;
             bool running = true;
             string mainInput;
@@ -41,24 +42,29 @@ namespace{
                         fullName = Console.ReadLine();
                         Console.WriteLine("Input the Description");
                         desc = Console.ReadLine();
-                        ABSAdd absAdd = new ABSAdd(client);
+                        CouchDBAdd absAdd = new CouchDBAdd(client);
                         absAdd.Add(acronym, fullName, desc);
+                        Console.WriteLine("It has been saved! Here's what you can do: ");
+                        Console.WriteLine($"Here's what you've inputed for Acronym: {acronym}");
+                        Console.WriteLine($"Here's what you've inputed for the Full Name: {fullName}");
+                        Console.WriteLine($"Here's what you've inputed for the Description: {desc}");
+                        Console.WriteLine("It has been saved! Here's what you can do: ");
                         mainScreen = true;
                         break;
                     case "2":
-                        ABSDelete absDelete = new ABSDelete(client);
+                        CouchDBDelete absDelete = new CouchDBDelete(client);
                         absDelete.Delete();
                         mainScreen = true;
                         break;
                     case "3":
-                        ABSEdit absEdit = new ABSEdit(client);
+                        CouchDBEdit absEdit = new CouchDBEdit(client);
                         absEdit.Edit();
                         mainScreen = true;
                         break;
                     case "4":
                         Console.WriteLine("Search for the Acronym. Type 'main' to go to the main screen.");
                         searchInput = Console.ReadLine();
-                        ABSSearch absSearch = new ABSSearch(client);
+                        CouchDBSearch absSearch = new CouchDBSearch(client);
                         absSearch.Search(searchInput);
                         mainInput = Console.ReadLine();
                         if (mainInput == "main")

@@ -2,11 +2,11 @@
 
 namespace AlphabetSoup
 {
-    public class ABSSearch
+    internal sealed class CouchDBSearch : ISearchService
     {
         HttpClient client;
         string searchInput;
-        public ABSSearch(HttpClient client)
+        public CouchDBSearch(HttpClient client)
         {
             this.client = client;
             searchInput = "";
