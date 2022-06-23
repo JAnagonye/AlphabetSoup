@@ -4,8 +4,8 @@ namespace AlphabetSoup
 {
     internal sealed class CouchDBSearch : ISearchService
     {
-        HttpClient client;
-        public CouchDBSearch(HttpClient client)
+        ICouchDBClient client;
+        public CouchDBSearch(ICouchDBClient client)
         {
             this.client = client;
         }
@@ -16,8 +16,7 @@ namespace AlphabetSoup
             {
                 return null;
             }
-            CouchDBClient couchDBClient = new CouchDBClient();
-            return couchDBClient.ClientSearch(search);
+            return client.ClientSearch(search);
         }
     }
 }

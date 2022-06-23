@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AlphabetSoup
 {
-    internal class CouchDBClient
+    internal class CouchDBClient : ICouchDBClient
     {
         HttpClient client;
 
