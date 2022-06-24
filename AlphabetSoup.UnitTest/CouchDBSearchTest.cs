@@ -21,15 +21,13 @@ namespace AlphabetSoup.UnitTest
         {
             using (var mock = AutoMock.GetLoose())
             {
-                HttpClient client = new HttpClient();
-                CouchDBSearch absSearchTest = new CouchDBSearch(client);
-                mock.Mock<ISearchService>()
-                    .Setup(x => x.Search("TestAcronym"))
+                mock.Mock<ICouchDBClient>()
+                    .Setup(x => x.ClientSearch("TestAcronym"))
                     .Returns(GetAcronym);
-                var ctlr = mock.Create<ISearchService>;
-                var expected = GetAcronym();
+                var ctlr = mock.Create<ICouchDBClient>;
+                string expected = GetAcronym();
 
-                var actual = ctlr.Search();
+                var actual = ctlr.ClientSearch("Test Acronym");
             }
         }
 
