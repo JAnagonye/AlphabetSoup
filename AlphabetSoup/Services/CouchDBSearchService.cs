@@ -13,7 +13,7 @@ namespace AlphabetSoup.Services
             httpClient = client;
         }
 
-        public ICouchDBAcronymModel Search(string search)
+        public CouchDBDocsModel Search(string search)
         {
             if (string.IsNullOrEmpty(search))
             {

@@ -7,6 +7,6 @@ namespace AlphabetSoup.Client
         void Insert(AcronymModel model);
         void ClientDelete();
         void ClientEdit();
-        ICouchDBAcronymModel Get(string search);
+        CouchDBDocsModel Get(string search);
     }
 }

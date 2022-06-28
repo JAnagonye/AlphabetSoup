@@ -30,7 +30,7 @@ namespace AlphabetSoup.Client
             };
         }
 
-        public ICouchDBAcronymModel Get(string search)
+        public CouchDBDocsModel Get(string search)
         {
             string selectorJSON = @"{
             ""selector"": {
@@ -50,8 +50,8 @@ namespace AlphabetSoup.Client
             Task<HttpResponseMessage> searchTask = httpClient.PostAsync("http://localhost:5984/alphabetsoup/_find", selector);
             string searchValue = searchTask.Result.Content.ReadAsStringAsync().Result;
             Console.WriteLine(searchValue);
-            ICouchDBAcronymModel finalModel = JsonSerializer.Deserialize<CouchDBAcronymModel>(searchValue);
-            return finalModel;
+            CouchDBDocsModel resultDocs = JsonSerializer.Deserialize<CouchDBDocsModel>(searchValue);
+            return resultDocs;
         }
         public void ClientDelete()
         {

@@ -11,5 +11,5 @@ namespace AlphabetSoup.Models
     {
         public string id { get; set; }
         public IAcronymModel AcronymModel { get; set; }
-    }
+    };
 }
