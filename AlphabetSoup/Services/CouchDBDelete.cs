@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace AlphabetSoup
+namespace AlphabetSoup.Services
 {
     public class CouchDBDelete
     {
         HttpClient client;
-        string? deleteInput;
+        string deleteInput;
         public CouchDBDelete(HttpClient client)
         {
             this.client = client;

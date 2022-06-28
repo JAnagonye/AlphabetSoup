@@ -1,4 +1,6 @@
-﻿namespace AlphabetSoup
+﻿using AlphabetSoup.Models;
+
+namespace AlphabetSoup.Models
 {
     internal sealed class AcronymModel : IAcronymModel
     {

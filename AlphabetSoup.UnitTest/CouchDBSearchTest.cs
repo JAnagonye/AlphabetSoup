@@ -1,44 +1,34 @@
-using AlphabetSoup;
+using AlphabetSoup.Client;
+using AlphabetSoup.Models;
+using AlphabetSoup.Services;
 using Autofac.Extras.Moq;
+using Moq;
 
 namespace AlphabetSoup.UnitTest
 {
     public class CouchDBSearchTest
     {
         [Fact]
-        public void Test1()
+        public void Search_WhenSearchIsNull_ShouldReturnNull()
         {
-            using (var mock = AutoMock.GetLoose())
-            {
-                HttpClient client = new HttpClient();
-                CouchDBSearch absSearchTest = new CouchDBSearch(client);
-                string result = absSearchTest.Search(null);
-                Assert.Null(result);
-            }
+            Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
+            mock.Setup(x => x.Get(It.IsAny<string>())).Verifiable();
+            CouchDBSearchService searchServiceTest = new CouchDBSearchService(mock.Object);
+            ICouchDBAcronymModel result = searchServiceTest.Search(null);
+            Assert.Null(result);
+            mock.Verify(x => x.Get(It.IsAny<string>()), Times.Never);
         }
         [Fact]
         public void Search_WhenSearchIsHasValue_ShouldReturnValue()
         {
-            using (var mock = AutoMock.GetLoose())
-            {
-                mock.Mock<ICouchDBClient>()
-                    .Setup(x => x.ClientSearch("TestAcronym"))
-                    .Returns(GetAcronym);
-                var ctlr = mock.Create<ICouchDBClient>;
-                string expected = GetAcronym();
-
-                var actual = ctlr.ClientSearch("Test Acronym");
-            }
-        }
-
-        private string GetAcronym()
-        {
-            Guid g = new Guid();
-            string testAcronym = @" ""_id"":" + $"\"{g}\"" + 
-            @"""acronym"": ""TestAcronym"",
-            ""fullName"": ""test"",
-            ""description"": ""test""";
-            return testAcronym;      
-        }
+            Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
+            ICouchDBAcronymModel couchDBAcronymModel = Mock.Of<ICouchDBAcronymModel>();
+            mock.Setup(x => x.Get("TestAcronym"))
+                .Returns(couchDBAcronymModel);
+            CouchDBSearchService searchServiceTest = new CouchDBSearchService(mock.Object);
+            var actual = searchServiceTest.Search("TestAcronym");
+            Assert.NotNull(actual);
+            mock.Verify(x => x.Get("TestAcronym"), Times.Once);
+        }                                                                                
     }
 }

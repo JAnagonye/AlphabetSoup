@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace AlphabetSoup
+namespace AlphabetSoup.Services
 {
     public class CouchDBEdit
     {
         HttpClient client;
-        string? editInput;
+        string editInput;
         public CouchDBEdit(HttpClient client)
         {
             this.client = client;

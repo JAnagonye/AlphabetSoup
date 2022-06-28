@@ -1,4 +1,4 @@
-﻿namespace AlphabetSoup
+﻿namespace AlphabetSoup.Models
 {
     public interface IAcronymModel
     {
