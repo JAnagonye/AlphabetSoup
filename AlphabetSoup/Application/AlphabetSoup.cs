@@ -20,7 +20,6 @@ namespace AlphabetSoup.Application
                 string inputStr = "";
                 bool mainScreen = true;
                 bool running = true;
-                string mainInput;
                 string searchInput = string.Empty;
                 string acronym = string.Empty;
                 string fullName = string.Empty;
@@ -70,8 +69,7 @@ namespace AlphabetSoup.Application
                             Console.WriteLine("Search for the Acronym. Type 'main' to go to the main screen.");
                             searchInput = Console.ReadLine();
                             Console.WriteLine(searchService.Search(searchInput));
-                            mainInput = Console.ReadLine();
-                            if (mainInput == "main")
+                            if (searchInput == "main")
                             {
                                 mainScreen = true;
                             }

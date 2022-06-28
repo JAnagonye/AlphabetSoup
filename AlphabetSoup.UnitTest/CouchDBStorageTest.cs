@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AlphabetSoup.UnitTest
 {
-    internal class CouchDBAddTest
+    internal class CouchDBStorageTest
     {
     }
 }

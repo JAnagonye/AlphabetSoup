@@ -49,7 +49,9 @@ namespace AlphabetSoup.Client
             selector.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             Task<HttpResponseMessage> searchTask = httpClient.PostAsync("http://localhost:5984/alphabetsoup/_find", selector);
             string searchValue = searchTask.Result.Content.ReadAsStringAsync().Result;
-            return JsonSerializer.Deserialize<CouchDBAcronymModel>(searchValue);
+            Console.WriteLine(searchValue);
+            CouchDBAcronymModel finalModel = JsonSerializer.Deserialize<CouchDBAcronymModel>(searchValue);
+            return finalModel;
         }
         public void ClientDelete()
         {

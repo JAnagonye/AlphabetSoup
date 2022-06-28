@@ -9,7 +9,7 @@ namespace AlphabetSoup.Models
 {
     internal sealed class CouchDBAcronymModel : ICouchDBAcronymModel
     {
-        public IAcronymModel AcronymModel { get; set; }
         public string id { get; set; }
+        public IAcronymModel AcronymModel { get; set; }
     }
 }
