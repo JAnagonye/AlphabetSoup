@@ -50,7 +50,7 @@ namespace AlphabetSoup.Client
             Task<HttpResponseMessage> searchTask = httpClient.PostAsync("http://localhost:5984/alphabetsoup/_find", selector);
             string searchValue = searchTask.Result.Content.ReadAsStringAsync().Result;
             Console.WriteLine(searchValue);
-            CouchDBAcronymModel finalModel = JsonSerializer.Deserialize<CouchDBAcronymModel>(searchValue);
+            ICouchDBAcronymModel finalModel = JsonSerializer.Deserialize<CouchDBAcronymModel>(searchValue);
             return finalModel;
         }
         public void ClientDelete()

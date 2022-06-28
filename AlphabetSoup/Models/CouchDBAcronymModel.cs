@@ -7,7 +7,7 @@ using AlphabetSoup.Models;
 
 namespace AlphabetSoup.Models
 {
-    internal sealed class CouchDBAcronymModel : ICouchDBAcronymModel
+    internal sealed class CouchDBAcronymModel : AcronymModel, ICouchDBAcronymModel
     {
         public string id { get; set; }
         public IAcronymModel AcronymModel { get; set; }

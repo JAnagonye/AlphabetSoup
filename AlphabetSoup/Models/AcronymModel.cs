@@ -2,7 +2,7 @@
 
 namespace AlphabetSoup.Models
 {
-    internal sealed class AcronymModel : IAcronymModel
+    internal class AcronymModel : IAcronymModel
     {
         public string Acronym { get; set; }
         public string FullName { get; set; }
