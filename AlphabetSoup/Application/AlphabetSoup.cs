@@ -24,6 +24,10 @@ namespace AlphabetSoup.Application
                 string acronym = string.Empty;
                 string fullName = string.Empty;
                 string desc = string.Empty;
+                string deleteInput = string.Empty;
+                string deleteIdInput = string.Empty;
+                string deleteRevInput = string.Empty;
+                string editInput = string.Empty;
                 CouchDBStorageService storeService = new CouchDBStorageService(client);
                 CouchDBSearchService searchService = new CouchDBSearchService(client);
                 while (running)
@@ -60,13 +64,33 @@ namespace AlphabetSoup.Application
                             mainScreen = true;
                             break;
                         case "2":
-                            //CouchDBDelete absDelete = new CouchDBDelete(client);
-                            //absDelete.Delete();
+                            Console.WriteLine("Search for the Deletion (Warning: This will delete the whole file, the acronym and its data)");
+                            deleteInput = Console.ReadLine();
+                            Console.WriteLine(JsonConvert.SerializeObject(searchService.Search(deleteInput)));
+                            Console.WriteLine("Input the ID(_id field) exactly from the search.");
+                            deleteIdInput = Console.ReadLine();
+                            Console.WriteLine("Input the Rev(_rev field) exactly from the Search");
+                            deleteRevInput = Console.ReadLine();
+                            client.Purge(deleteIdInput, deleteRevInput);
+                            Console.WriteLine("Delete Completed");
                             mainScreen = true;
                             break;
                         case "3":
-                            //couchdbedit absedit = new couchdbedit(client);
-                            //absedit.edit();
+                            Console.WriteLine("Search for the acryonym to be Edited");
+                            Console.WriteLine("1- Edit the Acronym ");
+                            Console.WriteLine("2- Edit the Full Name");
+                            Console.WriteLine("3- Edit the Descripton");
+                            editInput = Console.ReadLine();
+                            switch (editInput)
+                            {
+                                case "1":
+                                    break;
+                                case "2":
+                                    break;
+                                case "3":
+                                    break;
+                            }
+                            Console.WriteLine("Editing Complete!");
                             mainScreen = true;
                             break;
                         case "4":

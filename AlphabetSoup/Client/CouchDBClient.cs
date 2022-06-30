@@ -34,28 +34,35 @@ namespace AlphabetSoup.Client
             ""selector"": {
             ""acronym"": { 
                 ""$regex"": " + $"\"{search}\"" +
-                @"}
-            },
+                    @"}
+                },
             ""fields"": [
             ""_id"",
+            ""_rev"",
             ""acronym"", 
             ""fullName"", 
             ""description""
-            ]
+                ]
             }";
             StringContent selector = new StringContent(selectorJSON);
             selector.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             Task<HttpResponseMessage> searchTask = httpClient.PostAsync("http://localhost:5984/alphabetsoup/_find", selector);
             string searchValue = searchTask.Result.Content.ReadAsStringAsync().Result;
-            //Console.WriteLine(searchValue);
             CouchDBDocsModel resultDocs = JsonConvert.DeserializeObject<CouchDBDocsModel>(searchValue);
             return resultDocs;
         }
-        public void ClientDelete()
+        public void Purge(string id, string rev)
         {
-
+            string purgeJSON = @"{ "
+            + $"\"{id}\""  + @": [ "
+            + $"\"{rev}\"" +
+                @"]
+            }";
+            StringContent purge = new StringContent(purgeJSON);
+            purge.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            Task<HttpResponseMessage> purgeTask = httpClient.PostAsync("http://localhost:5984/alphabetsoup/_purge", purge);
         }
-        public void ClientEdit()
+        public void Modify()
         {
 
         }
