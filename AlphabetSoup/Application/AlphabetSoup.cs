@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
+using Newtonsoft.Json;
 using AlphabetSoup.Services;
 using AlphabetSoup.Client;
 
@@ -24,6 +24,10 @@ namespace AlphabetSoup.Application
                 string acronym = string.Empty;
                 string fullName = string.Empty;
                 string desc = string.Empty;
+                string deleteInput = string.Empty;
+                string deleteIdInput = string.Empty;
+                string deleteRevInput = string.Empty;
+                string editInput = string.Empty;
                 CouchDBStorageService storeService = new CouchDBStorageService(client);
                 CouchDBSearchService searchService = new CouchDBSearchService(client);
                 while (running)
@@ -41,13 +45,17 @@ namespace AlphabetSoup.Application
                     switch (inputStr)
                     {
                         case "1":
-                            Console.WriteLine("Input the Acryonym");
+                            Console.WriteLine("Input the Acryonym(Maximum Characters: 10)");
                             acronym = Console.ReadLine();
-                            Console.WriteLine("Input the Full Name");
+                            Console.WriteLine("Input the Full Name(Maximum Characters: 100");
                             fullName = Console.ReadLine();
-                            Console.WriteLine("Input the Description");
+                            Console.WriteLine("Input the Description(Maximum Characters: 250");
                             desc = Console.ReadLine();
-                            storeService.Store(acronym, fullName, desc);
+                            if(!storeService.Store(acronym, fullName, desc))
+                            {
+                                Console.WriteLine("The acronym and its data cannot be saved due to the length of the acronym being above 10 characters long" +
+                                ", fullname being longer than 100 characters and/or description being over 250 characters long.");
+                            }
                             Console.WriteLine("It has been saved! Here's what you can do: ");
                             Console.WriteLine($"Here's what you've inputed for Acronym: {acronym}");
                             Console.WriteLine($"Here's what you've inputed for the Full Name: {fullName}");
@@ -56,19 +64,39 @@ namespace AlphabetSoup.Application
                             mainScreen = true;
                             break;
                         case "2":
-                            //CouchDBDelete absDelete = new CouchDBDelete(client);
-                            //absDelete.Delete();
+                            Console.WriteLine("Search for the Deletion (Warning: This will delete the whole file, the acronym and its data)");
+                            deleteInput = Console.ReadLine();
+                            Console.WriteLine(JsonConvert.SerializeObject(searchService.Search(deleteInput)));
+                            Console.WriteLine("Input the ID(_id field) exactly from the search.");
+                            deleteIdInput = Console.ReadLine();
+                            Console.WriteLine("Input the Rev(_rev field) exactly from the Search");
+                            deleteRevInput = Console.ReadLine();
+                            client.Purge(deleteIdInput, deleteRevInput);
+                            Console.WriteLine("Delete Completed");
                             mainScreen = true;
                             break;
                         case "3":
-                            //couchdbedit absedit = new couchdbedit(client);
-                            //absedit.edit();
+                            Console.WriteLine("Search for the acryonym to be Edited");
+                            Console.WriteLine("1- Edit the Acronym ");
+                            Console.WriteLine("2- Edit the Full Name");
+                            Console.WriteLine("3- Edit the Descripton");
+                            editInput = Console.ReadLine();
+                            switch (editInput)
+                            {
+                                case "1":
+                                    break;
+                                case "2":
+                                    break;
+                                case "3":
+                                    break;
+                            }
+                            Console.WriteLine("Editing Complete!");
                             mainScreen = true;
                             break;
                         case "4":
                             Console.WriteLine("Search for the Acronym. Type 'main' to go to the main screen.");
                             searchInput = Console.ReadLine();
-                            Console.WriteLine(searchService.Search(searchInput));
+                            Console.WriteLine(JsonConvert.SerializeObject(searchService.Search(searchInput)));
                             if (searchInput == "main")
                             {
                                 mainScreen = true;

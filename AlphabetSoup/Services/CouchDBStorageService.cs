@@ -14,15 +14,27 @@ namespace AlphabetSoup.Services
             httpClient = client;
         }
 
-        public void Store(string acronym, string fullName, string desc)
+        public bool Store(string acronym, string fullName, string desc)
         {
+            if(acronym == null)
+            {
+                return false;
+            }
             var acronymModel = new AcronymModel
             {
                 Acronym = acronym,
                 FullName = fullName,
                 Description = desc
             };
-            httpClient.Insert(acronymModel);
+            if (acronym.Length <= 10 && fullName.Length <= 100 && desc.Length <= 250 
+                && Char.IsWhiteSpace(acronym, 0) == false )
+            {
+                httpClient.Insert(acronymModel);
+                return true;
+            } else
+            {
+                return false; 
+            }
         }
     }
 }
