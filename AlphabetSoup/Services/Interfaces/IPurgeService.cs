@@ -8,6 +8,6 @@ namespace AlphabetSoup.Services
 {
     internal interface IPurgeService
     {
-        void Delete(string id, string rev);
+        bool Delete(string id, string rev);
     }
 }

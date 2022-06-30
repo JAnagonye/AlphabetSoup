@@ -17,7 +17,7 @@ namespace AlphabetSoup.Application
                 CouchDBClient client = new CouchDBClient(httpClient);
                 httpClient.DefaultRequestHeaders.Add("Authorization", "Basic YWRtaW46WU9VUlBBU1NXT1JE");
                 Console.WriteLine("Welcome to the Alphabet Soup Application");
-                string inputStr = "";
+                string inputStr = string.Empty;
                 bool mainScreen = true;
                 bool running = true;
                 string searchInput = string.Empty;
@@ -30,6 +30,7 @@ namespace AlphabetSoup.Application
                 string editInput = string.Empty;
                 CouchDBStorageService storeService = new CouchDBStorageService(client);
                 CouchDBSearchService searchService = new CouchDBSearchService(client);
+                CouchDBPurgeService purgeService = new CouchDBPurgeService(client); 
                 while (running)
                 {
                     if (mainScreen)
@@ -71,7 +72,10 @@ namespace AlphabetSoup.Application
                             deleteIdInput = Console.ReadLine();
                             Console.WriteLine("Input the Rev(_rev field) exactly from the Search");
                             deleteRevInput = Console.ReadLine();
-                            client.Purge(deleteIdInput, deleteRevInput);
+                            if (!purgeService.Delete(deleteIdInput, deleteRevInput))
+                            {
+                                Console.WriteLine("Invalid Input. The id or rev is null.");
+                            }
                             Console.WriteLine("Delete Completed");
                             mainScreen = true;
                             break;

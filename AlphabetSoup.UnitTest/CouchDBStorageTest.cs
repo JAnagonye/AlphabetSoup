@@ -29,7 +29,7 @@ namespace AlphabetSoup.UnitTest
             Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
             mock.Setup(x => x.Insert(It.IsAny<AcronymModel>())).Verifiable();
             CouchDBStorageService storageServiceTest = new CouchDBStorageService(mock.Object);
-            bool result = storageServiceTest.Store("AA", "AA","AA");
+            bool result = storageServiceTest.Store("Test", "Test","Test");
             Assert.True(result);
             mock.Verify(x => x.Insert(It.IsAny<AcronymModel>()), Times.Once);
         }
@@ -40,7 +40,7 @@ namespace AlphabetSoup.UnitTest
             Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
             mock.Setup(x => x.Insert(It.IsAny<AcronymModel>())).Verifiable();
             CouchDBStorageService storageServiceTest = new CouchDBStorageService(mock.Object);
-            bool result = storageServiceTest.Store("AAAAAAAAAAAAAAAAA", "AA", "AA");
+            bool result = storageServiceTest.Store("Very Long Test", "test", "test");
             Assert.False(result);
             mock.Verify(x => x.Insert(It.IsAny<AcronymModel>()), Times.Never);
         }

@@ -11,9 +11,17 @@ namespace AlphabetSoup.Services
             this.httpClient = client;
         }
 
-        public void Delete(string id, string rev)
+        public bool Delete(string id, string rev)
         {
-            httpClient.Purge(id, rev);
+            if (id == null || rev == null)
+            {
+                return false;
+            }
+            else
+            {
+                httpClient.Purge(id, rev);
+                return true;
+            }
         }
     }
 }
