@@ -1,11 +1,12 @@
 ﻿using AlphabetSoup.Models;
+using Newtonsoft.Json;
 
 namespace AlphabetSoup.Models
 {
     internal class AcronymModel : IAcronymModel
     {
-        public string Acronym { get; set; }
-        public string FullName { get; set; }
-        public string Description { get; set; }
+        [JsonProperty("acronym")] public string Acronym { get; set; }
+        [JsonProperty("fullName")] public string FullName { get; set; }
+        [JsonProperty("description")] public string Description { get; set; }
     }
 }

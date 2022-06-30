@@ -4,9 +4,8 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
-using System.Text.Json;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
-using AlphabetSoup.Client;
 using AlphabetSoup.Models;
 
 namespace AlphabetSoup.Client
@@ -25,8 +24,7 @@ namespace AlphabetSoup.Client
             HttpResponseMessage nTask = httpClient.PutAsync($"http://localhost:5984/alphabetsoup/{g}", JsonContent.Create(model)).Result;
             var couchDBModel = new CouchDBAcronymModel
             {
-                AcronymModel = model,
-                id = ""
+                Id = ""
             };
         }
 
@@ -49,8 +47,8 @@ namespace AlphabetSoup.Client
             selector.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             Task<HttpResponseMessage> searchTask = httpClient.PostAsync("http://localhost:5984/alphabetsoup/_find", selector);
             string searchValue = searchTask.Result.Content.ReadAsStringAsync().Result;
-            Console.WriteLine(searchValue);
-            CouchDBDocsModel resultDocs = JsonSerializer.Deserialize<CouchDBDocsModel>(searchValue);
+            //Console.WriteLine(searchValue);
+            CouchDBDocsModel resultDocs = JsonConvert.DeserializeObject<CouchDBDocsModel>(searchValue);
             return resultDocs;
         }
         public void ClientDelete()

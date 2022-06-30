@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AlphabetSoup.Models;
+using Newtonsoft.Json;
 
 namespace AlphabetSoup.Models
 {
     internal sealed class CouchDBAcronymModel : AcronymModel, ICouchDBAcronymModel
     {
-        public string id { get; set; }
-        public IAcronymModel AcronymModel { get; set; }
+        [JsonProperty("_id")] public string Id { get; set; }
     };
 }

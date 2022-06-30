@@ -2,8 +2,6 @@
 {
     internal interface ICouchDBAcronymModel
     {
-        string id { get; set; }
-        IAcronymModel AcronymModel { get; set; }
-
+        string Id { get; set; }
     }
 }

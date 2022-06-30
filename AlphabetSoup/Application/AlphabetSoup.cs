@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
+using Newtonsoft.Json;
 using AlphabetSoup.Services;
 using AlphabetSoup.Client;
 
@@ -41,13 +41,17 @@ namespace AlphabetSoup.Application
                     switch (inputStr)
                     {
                         case "1":
-                            Console.WriteLine("Input the Acryonym");
+                            Console.WriteLine("Input the Acryonym(Maximum Characters: 10)");
                             acronym = Console.ReadLine();
-                            Console.WriteLine("Input the Full Name");
+                            Console.WriteLine("Input the Full Name(Maximum Characters: 100");
                             fullName = Console.ReadLine();
-                            Console.WriteLine("Input the Description");
+                            Console.WriteLine("Input the Description(Maximum Characters: 250");
                             desc = Console.ReadLine();
-                            storeService.Store(acronym, fullName, desc);
+                            if(!storeService.Store(acronym, fullName, desc))
+                            {
+                                Console.WriteLine("The acronym and its data cannot be saved due to the length of the acronym being above 10 characters long" +
+                                ", fullname being longer than 100 characters and/or description being over 250 characters long.");
+                            }
                             Console.WriteLine("It has been saved! Here's what you can do: ");
                             Console.WriteLine($"Here's what you've inputed for Acronym: {acronym}");
                             Console.WriteLine($"Here's what you've inputed for the Full Name: {fullName}");
@@ -68,7 +72,7 @@ namespace AlphabetSoup.Application
                         case "4":
                             Console.WriteLine("Search for the Acronym. Type 'main' to go to the main screen.");
                             searchInput = Console.ReadLine();
-                            Console.WriteLine(searchService.Search(searchInput));
+                            Console.WriteLine(JsonConvert.SerializeObject(searchService.Search(searchInput)));
                             if (searchInput == "main")
                             {
                                 mainScreen = true;
