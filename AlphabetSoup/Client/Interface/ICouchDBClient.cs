@@ -2,11 +2,11 @@
 
 namespace AlphabetSoup.Client
 {
-    internal interface ICouchDBClient
+    public interface ICouchDBClient
     {
-        void Insert(AcronymModel model);
+        void Insert(IAcronymModel model);
         void Purge(string id, string rev);
         void Modify();
-        CouchDBDocsModel Get(string search);
+        ICouchDBDocsModel Get(string search);
     }
 }

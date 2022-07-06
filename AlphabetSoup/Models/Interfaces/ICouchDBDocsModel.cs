@@ -7,9 +7,9 @@ using Newtonsoft.Json;
 
 namespace AlphabetSoup.Models
 {
-    internal interface ICouchDBDocsModel
+    public interface ICouchDBDocsModel
     {
-        public List<CouchDBAcronymModel> Docs { get; set; }
-        public ICouchDBAcronymModel CouchDBAcronym { get; set; }
+        public IEnumerable<ICouchDBAcronymModel> Docs { get; }
+        public ICouchDBAcronymModel CouchDBAcronym { get; }
     }
 }

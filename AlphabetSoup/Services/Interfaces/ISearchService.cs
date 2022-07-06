@@ -2,8 +2,8 @@
 
 namespace AlphabetSoup.Services
 {
-    internal interface ISearchService
+    public interface ISearchService
     {
-        CouchDBDocsModel Search(string search);
+        ICouchDBDocsModel Search(string search);
     }
 }

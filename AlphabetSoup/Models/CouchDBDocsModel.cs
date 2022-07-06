@@ -7,9 +7,10 @@ using Newtonsoft.Json;
 
 namespace AlphabetSoup.Models
 {
-    internal class CouchDBDocsModel
+    internal class CouchDBDocsModel : ICouchDBDocsModel
     {
-        [JsonProperty("docs")] public List<CouchDBAcronymModel> Docs { get; set; }
+        public List<CouchDBAcronymModel> docs { get; set; }
+        public IEnumerable<ICouchDBAcronymModel> Docs => docs;
         public ICouchDBAcronymModel CouchDBAcronym { get; set; }
     }
 }

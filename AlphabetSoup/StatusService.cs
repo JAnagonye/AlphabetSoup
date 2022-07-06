@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AlphabetSoup.Services
+namespace AlphabetSoup
 {
-    public interface IModifyService
+    internal class StatusService
     {
-        void Edit();
     }
 }

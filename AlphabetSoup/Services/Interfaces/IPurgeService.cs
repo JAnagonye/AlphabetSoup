@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AlphabetSoup.Services
 {
-    internal interface IPurgeService
+    public interface IPurgeService
     {
         bool Delete(string id, string rev);
     }

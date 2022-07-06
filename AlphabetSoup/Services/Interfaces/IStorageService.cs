@@ -1,4 +1,6 @@
-﻿namespace AlphabetSoup.Services
+﻿
+
+namespace AlphabetSoup.Services
 {
     public interface IStorageService
     {

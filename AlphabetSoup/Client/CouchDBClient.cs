@@ -18,17 +18,17 @@ namespace AlphabetSoup.Client
             httpClient = client;
         }
 
-        public void Insert(AcronymModel model)
+        public void Insert(IAcronymModel model)
         {
             Guid g = Guid.NewGuid();
-            HttpResponseMessage nTask = httpClient.PutAsync($"http://localhost:5984/alphabetsoup/{g}", JsonContent.Create(model)).Result;
+            HttpResponseMessage nTask = httpClient.PostAsync($"http://localhost:5984/alphabetsoup/{g}", JsonContent.Create(model)).Result;
             var couchDBModel = new CouchDBAcronymModel
             {
                 Id = ""
             };
         }
 
-        public CouchDBDocsModel Get(string search)
+        public ICouchDBDocsModel Get(string search)
         {
             string selectorJSON = @"{
             ""selector"": {
