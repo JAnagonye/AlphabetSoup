@@ -6,7 +6,7 @@ namespace AlphabetSoup.Client
     {
         void Insert(IAcronymModel model);
         void Purge(string id, string rev);
-        void Modify();
+        void Modify(string id, string rev, string acronym);
         ICouchDBDocsModel Get(string search);
     }
 }

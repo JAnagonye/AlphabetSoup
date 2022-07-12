@@ -22,10 +22,6 @@ namespace AlphabetSoup.Client
         {
             Guid g = Guid.NewGuid();
             HttpResponseMessage nTask = httpClient.PostAsync($"http://localhost:5984/alphabetsoup/{g}", JsonContent.Create(model)).Result;
-            var couchDBModel = new CouchDBAcronymModel
-            {
-                Id = ""
-            };
         }
 
         public ICouchDBDocsModel Get(string search)
@@ -62,9 +58,16 @@ namespace AlphabetSoup.Client
             purge.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             Task<HttpResponseMessage> purgeTask = httpClient.PostAsync("http://localhost:5984/alphabetsoup/_purge", purge);
         }
-        public void Modify()
+        public void Modify(string id, string rev, string acronym)
         {
-
+            string updateJSON = @"{ ""acronym"":"
+            + $"\"{acronym}\"" + @", ""_rev"" "
+            + $"\"{rev}\"" +
+                @"]
+            }";
+            StringContent update = new StringContent(updateJSON);
+            update.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            Task<HttpResponseMessage> modifyTask = httpClient.PutAsync("http://localhost:5984/alphabetsoup/" + $"\"{id}\"", update);
         }
     }
 }

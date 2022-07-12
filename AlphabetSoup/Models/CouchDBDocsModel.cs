@@ -10,7 +10,11 @@ namespace AlphabetSoup.Models
     internal class CouchDBDocsModel : ICouchDBDocsModel
     {
         public List<CouchDBAcronymModel> docs { get; set; }
-        public IEnumerable<ICouchDBAcronymModel> Docs => docs;
-        public ICouchDBAcronymModel CouchDBAcronym { get; set; }
+        IEnumerable<ICouchDBAcronymModel> ICouchDBDocsModel.Docs => docs;
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(docs);
+        }
     }
 }

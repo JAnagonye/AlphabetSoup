@@ -7,8 +7,8 @@ using Newtonsoft.Json;
 
 namespace AlphabetSoup.Models
 {
-    public interface ICouchDBDocsModel
+    internal interface IStatusResponse
     {
-        public IEnumerable<ICouchDBAcronymModel> Docs { get; }
+        [JsonProperty("status")] public int Status { get; set; }
     }
 }
