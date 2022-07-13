@@ -1,9 +1,11 @@
 ﻿
 
+using AlphabetSoup.Models;
+
 namespace AlphabetSoup.Services
 {
     public interface IStorageService
     {
-        bool Store(string acronym, string fullName, string desc);
+        ICouchDBAcronymModel Store(string acronym, string fullName, string desc);
     }
 }

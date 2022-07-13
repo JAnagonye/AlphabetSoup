@@ -1,4 +1,5 @@
-﻿using AlphabetSoup.Services;
+﻿using AlphabetSoup.Models;
+using AlphabetSoup.Services;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -22,11 +23,7 @@ namespace WebAlphabetSoup.Controllers
         [HttpPost("{acronym}, {fullName}, {desc}")]
         public IActionResult Post(string acronym, string fullName, string desc)
         {
-            if(acronym == null || fullName == null || desc == null)
-            {
-                return BadRequest();
-            }
-            _storageService.Store(acronym, fullName, desc);
+            ICouchDBAcronymModel result = _storageService.Store(acronym, fullName, desc);
             return Ok(result);
         }
     }

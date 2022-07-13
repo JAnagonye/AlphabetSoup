@@ -52,11 +52,7 @@ namespace AlphabetSoup.Application
                             fullName = Console.ReadLine();
                             Console.WriteLine("Input the Description(Maximum Characters: 250");
                             desc = Console.ReadLine();
-                            if(!storeService.Store(acronym, fullName, desc))
-                            {
-                                Console.WriteLine("The acronym and its data cannot be saved due to the length of the acronym being above 10 characters long" +
-                                ", fullname being longer than 100 characters and/or description being over 250 characters long.");
-                            }
+                            storeService.Store(acronym, fullName, desc);
                             Console.WriteLine("It has been saved! Here's what you can do: ");
                             Console.WriteLine($"Here's what you've inputed for Acronym: {acronym}");
                             Console.WriteLine($"Here's what you've inputed for the Full Name: {fullName}");

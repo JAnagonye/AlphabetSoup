@@ -14,7 +14,7 @@ namespace AlphabetSoup.UnitTest
             Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
             mock.Setup(x => x.Get(It.IsAny<string>())).Verifiable();
             CouchDBSearchService searchServiceTest = new CouchDBSearchService(mock.Object);
-            CouchDBDocsModel result = searchServiceTest.Search(null);
+            ICouchDBDocsModel result = searchServiceTest.Search(null);
             Assert.Null(result);
             mock.Verify(x => x.Get(It.IsAny<string>()), Times.Never);
         }

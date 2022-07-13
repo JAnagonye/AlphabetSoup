@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AlphabetSoup.Models;
+using AlphabetSoup.Services;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,22 +10,20 @@ namespace WebAlphabetSoup.Controllers
     [ApiController]
     public class ModifyServiceController : ControllerBase
     {
-        // POST api/<ModifyServiceController>
+        private readonly ILogger<ModifyServiceController> _logger;
+        private IModifyService _modifyService;
+
+        public ModifyServiceController(ILogger<ModifyServiceController> logger, IModifyService modify)
+        {
+            _logger = logger;
+            _modifyService = modify;
+        }
+        // POST api/<ModifyServiceController>/[http://127.0.0.1:5984/database_name/document_id/ -d '{ "field" : "value", "_rev" : "revision id" }'  
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] CouchDBAcronymModel model)
         {
-        }
-
-        // PUT api/<ModifyServiceController>/[http://127.0.0.1:5984/database_name/document_id/ -d '{ "field" : "value", "_rev" : "revision id" }'  
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<ModifyServiceController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            ICouchDBAcronymModel result = _modifyService.Edit(model);
+            return Ok(result);
         }
     }
 }

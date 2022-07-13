@@ -14,11 +14,11 @@ namespace AlphabetSoup.Services
             httpClient = client;
         }
 
-        public bool Store(string acronym, string fullName, string desc)
+        public ICouchDBAcronymModel Store(string acronym, string fullName, string desc)
         {
             if(acronym == null)
             {
-                return false;
+                return null;
             }
             var acronymModel = new AcronymModel
             {
@@ -29,11 +29,10 @@ namespace AlphabetSoup.Services
             if (acronym.Length <= 10 && fullName.Length <= 100 && desc.Length <= 250 
                 && Char.IsWhiteSpace(acronym, 0) == false )
             {
-                httpClient.Insert(acronymModel);
-                return true;
+                return httpClient.Insert(acronymModel);
             } else
             {
-                return false; 
+                return null; 
             }
         }
     }

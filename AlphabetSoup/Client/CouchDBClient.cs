@@ -7,6 +7,8 @@ using System.Text;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using AlphabetSoup.Models;
+using System.Text.Json.Nodes;
+using Newtonsoft.Json.Linq;
 
 namespace AlphabetSoup.Client
 {
@@ -18,10 +20,28 @@ namespace AlphabetSoup.Client
             httpClient = client;
         }
 
-        public void Insert(IAcronymModel model)
+        public ICouchDBAcronymModel Insert(IAcronymModel model)
         {
+            CouchDBAcronymModel response = new CouchDBAcronymModel();
             Guid g = Guid.NewGuid();
-            HttpResponseMessage nTask = httpClient.PostAsync($"http://localhost:5984/alphabetsoup/{g}", JsonContent.Create(model)).Result;
+            HttpResponseMessage insertTask = httpClient.PutAsync($"http://localhost:5984/alphabetsoup/{g}", JsonContent.Create(model)).Result;
+            if(insertTask.IsSuccessStatusCode == false)
+            {
+                return null;
+            }
+            string result = insertTask.Content.ReadAsStringAsync().Result;
+            JObject jObject = JObject.Parse(result);
+            JToken jToken = jObject.GetValue("ok");
+            if (!jToken.Value<bool>())
+            {
+                return null;
+            }
+            response.Acronym = model.Acronym;
+            response.FullName = model.FullName;
+            response.Description = model.Description;
+            response.Id = jObject.GetValue("id").Value<string>();
+            response.Rev = jObject.GetValue("rev").Value<string>();
+            return response;
         }
 
         public ICouchDBDocsModel Get(string search)
@@ -50,7 +70,7 @@ namespace AlphabetSoup.Client
         public void Purge(string id, string rev)
         {
             string purgeJSON = @"{ "
-            + $"\"{id}\""  + @": [ "
+            + $"\"{id}\"" + @": [ "
             + $"\"{rev}\"" +
                 @"]
             }";
@@ -58,16 +78,29 @@ namespace AlphabetSoup.Client
             purge.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             Task<HttpResponseMessage> purgeTask = httpClient.PostAsync("http://localhost:5984/alphabetsoup/_purge", purge);
         }
-        public void Modify(string id, string rev, string acronym)
+        //" + $"\"{model.Id}\""
+        public ICouchDBAcronymModel Modify(CouchDBAcronymModel model)
         {
-            string updateJSON = @"{ ""acronym"":"
-            + $"\"{acronym}\"" + @", ""_rev"" "
-            + $"\"{rev}\"" +
-                @"]
-            }";
-            StringContent update = new StringContent(updateJSON);
-            update.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            Task<HttpResponseMessage> modifyTask = httpClient.PutAsync("http://localhost:5984/alphabetsoup/" + $"\"{id}\"", update);
+            CouchDBAcronymModel response = new CouchDBAcronymModel();
+            JsonContent updateJSON = JsonContent.Create(model);
+            HttpResponseMessage modifyTask = httpClient.PutAsync("http://localhost:5984/alphabetsoup/" + $"\"{model.Id}\"", updateJSON).Result;
+            if (modifyTask.IsSuccessStatusCode == false)
+            {
+                return null;
+            }
+            string result = modifyTask.Content.ReadAsStringAsync().Result;
+            JObject jObject = JObject.Parse(result);
+            JToken jToken = jObject.GetValue("ok");
+            if (!jToken.Value<bool>())
+            {
+                return null;
+            }
+            response.Acronym = model.Acronym;
+            response.FullName = model.FullName;
+            response.Description = model.Description;
+            response.Id = jObject.GetValue("id").Value<string>();
+            response.Rev = jObject.GetValue("rev").Value<string>();
+            return response;
         }
     }
 }
