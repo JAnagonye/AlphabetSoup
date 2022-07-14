@@ -78,18 +78,17 @@ namespace AlphabetSoup.Client
             purge.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             Task<HttpResponseMessage> purgeTask = httpClient.PostAsync("http://localhost:5984/alphabetsoup/_purge", purge);
         }
-        //JsonContent.Create(model);
         public ICouchDBAcronymModel Modify(CouchDBAcronymModel model)
         {
             CouchDBAcronymModel response = new CouchDBAcronymModel();
             string updateJSON = @"{
             ""acronym"": " + $"\"{model.Acronym}\"" +
             @", ""fullName"": " + $"\"{model.FullName}\"" +
-            @", ""description"": " + "\"{model.Description}\"" +
+            @", ""description"": " + $"\"{model.Description}\"" +
             @", ""_rev"": " + $"\"{model.Rev}\"" +
             @"}";
-            //JsonContent updateJSON = JsonContent.Create(model);
-            HttpResponseMessage modifyTask = httpClient.PutAsync("http://localhost:5984/alphabetsoup/" + $"{model.Id}", JsonContent.Create(updateJSON)).Result;
+            StringContent update = new StringContent(updateJSON);
+            HttpResponseMessage modifyTask = httpClient.PutAsync("http://localhost:5984/alphabetsoup/" + $"{model.Id}", update).Result;
             if (modifyTask.IsSuccessStatusCode == false)
             {
                 return null;
