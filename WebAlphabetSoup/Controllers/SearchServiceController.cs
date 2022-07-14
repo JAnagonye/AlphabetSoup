@@ -25,11 +25,11 @@ namespace WebAlphabetSoup.Controllers
         [HttpGet("{acronymSearch}")]
         public IActionResult Get(string acronymSearch)
         {
-            if(acronymSearch == null)
+            if(string.IsNullOrWhiteSpace(acronymSearch))
             {
                 return BadRequest();
             }
-            ICouchDBDocsModel result = _searchService.Search(acronymSearch);
+            Task<ICouchDBDocsModel> result =_searchService.Search(acronymSearch);
             return Ok(result);
         }
     }

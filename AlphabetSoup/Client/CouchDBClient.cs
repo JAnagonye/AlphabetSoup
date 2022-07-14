@@ -20,12 +20,12 @@ namespace AlphabetSoup.Client
             httpClient = client;
         }
 
-        public ICouchDBAcronymModel Insert(IAcronymModel model)
+        public async Task<ICouchDBAcronymModel> Insert(IAcronymModel model)
         {
             CouchDBAcronymModel response = new CouchDBAcronymModel();
             Guid g = Guid.NewGuid();
-            HttpResponseMessage insertTask = httpClient.PutAsync($"http://localhost:5984/alphabetsoup/{g}", JsonContent.Create(model)).Result;
-            if(insertTask.IsSuccessStatusCode == false)
+            HttpResponseMessage insertTask = await httpClient.PutAsync($"http://localhost:5984/alphabetsoup/{g}", JsonContent.Create(model));
+            if(!insertTask.IsSuccessStatusCode)
             {
                 return null;
             }
@@ -44,7 +44,7 @@ namespace AlphabetSoup.Client
             return response;
         }
 
-        public ICouchDBDocsModel Get(string search)
+        public async Task<ICouchDBDocsModel> Get(string search)
         {
             string selectorJSON = @"{
             ""selector"": {
@@ -62,23 +62,23 @@ namespace AlphabetSoup.Client
             }";
             StringContent selector = new StringContent(selectorJSON);
             selector.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            Task<HttpResponseMessage> searchTask = httpClient.PostAsync("http://localhost:5984/alphabetsoup/_find", selector);
-            string searchValue = searchTask.Result.Content.ReadAsStringAsync().Result;
+            HttpResponseMessage searchTask = await httpClient.PostAsync("http://localhost:5984/alphabetsoup/_find", selector);
+            string searchValue = searchTask.Content.ReadAsStringAsync().Result;
             CouchDBDocsModel resultDocs = JsonConvert.DeserializeObject<CouchDBDocsModel>(searchValue);
             return resultDocs;
         }
-        public void Purge(string id, string rev)
+        public async void Purge(IPurgeModel purgeModel)
         {
             string purgeJSON = @"{ "
-            + $"\"{id}\"" + @": [ "
-            + $"\"{rev}\"" +
+            + $"\"{purgeModel.Id}\"" + @": [ "
+            + $"\"{purgeModel.Rev}\"" +
                 @"]
             }";
             StringContent purge = new StringContent(purgeJSON);
             purge.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            Task<HttpResponseMessage> purgeTask = httpClient.PostAsync("http://localhost:5984/alphabetsoup/_purge", purge);
+            HttpResponseMessage purgeTask = await httpClient.PostAsync("http://localhost:5984/alphabetsoup/_purge", purge);
         }
-        public ICouchDBAcronymModel Modify(CouchDBAcronymModel model)
+        public async Task<ICouchDBAcronymModel> Modify(CouchDBAcronymModel model)
         {
             CouchDBAcronymModel response = new CouchDBAcronymModel();
             string updateJSON = @"{
@@ -88,8 +88,8 @@ namespace AlphabetSoup.Client
             @", ""_rev"": " + $"\"{model.Rev}\"" +
             @"}";
             StringContent update = new StringContent(updateJSON);
-            HttpResponseMessage modifyTask = httpClient.PutAsync("http://localhost:5984/alphabetsoup/" + $"{model.Id}", update).Result;
-            if (modifyTask.IsSuccessStatusCode == false)
+            HttpResponseMessage modifyTask = await httpClient.PutAsync("http://localhost:5984/alphabetsoup/" + $"{model.Id}", update);
+            if (!modifyTask.IsSuccessStatusCode)
             {
                 return null;
             }

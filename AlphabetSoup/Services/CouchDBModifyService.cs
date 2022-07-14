@@ -12,17 +12,14 @@ namespace AlphabetSoup.Services
             this.httpClient = client;
         }
 
-        public ICouchDBAcronymModel Edit(CouchDBAcronymModel model)
+        public async Task<ICouchDBAcronymModel> Edit(CouchDBAcronymModel model)
         {
             if (model.Acronym.Length <= 10 && model.FullName.Length <= 100 && model.Description.Length <= 250
-                && Char.IsWhiteSpace(model.Acronym, 0) == false)
+                && !string.IsNullOrWhiteSpace(model.Acronym))
             {
-                return httpClient.Modify(model);
+                return await httpClient.Modify(model);
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
     }
 }

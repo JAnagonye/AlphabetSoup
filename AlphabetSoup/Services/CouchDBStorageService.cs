@@ -14,7 +14,7 @@ namespace AlphabetSoup.Services
             httpClient = client;
         }
 
-        public ICouchDBAcronymModel Store(string acronym, string fullName, string desc)
+        public async Task<ICouchDBAcronymModel> Store(string acronym, string fullName, string desc)
         {
             if(acronym == null)
             {
@@ -29,7 +29,7 @@ namespace AlphabetSoup.Services
             if (acronym.Length <= 10 && fullName.Length <= 100 && desc.Length <= 250 
                 && Char.IsWhiteSpace(acronym, 0) == false )
             {
-                return httpClient.Insert(acronymModel);
+                return await httpClient.Insert(acronymModel);
             } else
             {
                 return null; 

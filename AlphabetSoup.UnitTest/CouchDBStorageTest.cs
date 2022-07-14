@@ -12,13 +12,15 @@ namespace AlphabetSoup.UnitTest
 {
     public class CouchDBStorageTest
     {
-        [Fact]
-        public void Insert_WhenInsertIsNull_ShouldReturnFalse()
+        [Theory]
+        [InlineData("")]
+        [InlineData(" ")]
+        public void Insert_WhenInsertIsNull_ShouldReturnFalse(string inputValue)
         {
             Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
             mock.Setup(x => x.Insert(It.IsAny<AcronymModel>())).Verifiable();
             CouchDBStorageService storageServiceTest = new CouchDBStorageService(mock.Object);
-            ICouchDBAcronymModel result = storageServiceTest.Store(null, null, null);
+            Task<ICouchDBAcronymModel> result = storageServiceTest.Store(inputValue, inputValue, inputValue);
             mock.Verify(x => x.Insert(It.IsAny<AcronymModel>()), Times.Never);
         }
 
@@ -28,7 +30,7 @@ namespace AlphabetSoup.UnitTest
             Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
             mock.Setup(x => x.Insert(It.IsAny<AcronymModel>())).Verifiable();
             CouchDBStorageService storageServiceTest = new CouchDBStorageService(mock.Object);
-            ICouchDBAcronymModel result = storageServiceTest.Store("Test", "Test","Test");
+            Task<ICouchDBAcronymModel> result = storageServiceTest.Store("Test", "Test","Test");
             mock.Verify(x => x.Insert(It.IsAny<AcronymModel>()), Times.Once);
         }
 
@@ -38,17 +40,7 @@ namespace AlphabetSoup.UnitTest
             Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
             mock.Setup(x => x.Insert(It.IsAny<AcronymModel>())).Verifiable();
             CouchDBStorageService storageServiceTest = new CouchDBStorageService(mock.Object);
-            ICouchDBAcronymModel result = storageServiceTest.Store("Very Long Test", "test", "test");
-            mock.Verify(x => x.Insert(It.IsAny<AcronymModel>()), Times.Never);
-        }
-
-        [Fact]
-        public void Insert_WhenInsertHasAcronymValueWithWhitespace_ShouldReturnFalse()
-        {
-            Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
-            mock.Setup(x => x.Insert(It.IsAny<AcronymModel>())).Verifiable();
-            CouchDBStorageService storageServiceTest = new CouchDBStorageService(mock.Object);
-            ICouchDBAcronymModel result = storageServiceTest.Store(" ", "AA", "AA");
+            Task<ICouchDBAcronymModel> result = storageServiceTest.Store("Very Long Test", "test", "test");
             mock.Verify(x => x.Insert(It.IsAny<AcronymModel>()), Times.Never);
         }
     }

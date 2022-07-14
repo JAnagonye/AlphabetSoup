@@ -9,6 +9,6 @@ namespace AlphabetSoup.Services
 {
     public interface IModifyService
     {
-        ICouchDBAcronymModel Edit(CouchDBAcronymModel model);
+        Task<ICouchDBAcronymModel> Edit(CouchDBAcronymModel model);
     }
 }

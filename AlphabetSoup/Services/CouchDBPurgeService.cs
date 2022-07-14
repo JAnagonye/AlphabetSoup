@@ -1,5 +1,6 @@
 ﻿using System;
 using AlphabetSoup.Client;
+using AlphabetSoup.Models;
 
 namespace AlphabetSoup.Services
 {
@@ -11,15 +12,15 @@ namespace AlphabetSoup.Services
             this.httpClient = client;
         }
 
-        public bool Delete(string id, string rev)
+        public bool Delete(IPurgeModel purgeModel)
         {
-            if (id == null || rev == null)
+            if (purgeModel.Id == null || purgeModel.Rev == null)
             {
                 return false;
             }
             else
             {
-                httpClient.Purge(id, rev);
+                httpClient.Purge(purgeModel);
                 return true;
             }
         }

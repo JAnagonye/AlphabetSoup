@@ -6,6 +6,6 @@ namespace AlphabetSoup.Services
 {
     public interface IStorageService
     {
-        ICouchDBAcronymModel Store(string acronym, string fullName, string desc);
+        Task<ICouchDBAcronymModel> Store(string acronym, string fullName, string desc);
     }
 }

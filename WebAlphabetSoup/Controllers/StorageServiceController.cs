@@ -23,7 +23,7 @@ namespace WebAlphabetSoup.Controllers
         [HttpPost("{acronym}, {fullName}, {desc}")]
         public IActionResult Post(string acronym, string fullName, string desc)
         {
-            ICouchDBAcronymModel result = _storageService.Store(acronym, fullName, desc);
+            Task<ICouchDBAcronymModel> result = _storageService.Store(acronym, fullName, desc);
             return Ok(result);
         }
     }

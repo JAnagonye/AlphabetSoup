@@ -22,7 +22,11 @@ namespace WebAlphabetSoup.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] CouchDBAcronymModel model)
         {
-            ICouchDBAcronymModel result = _modifyService.Edit(model);
+            if (string.IsNullOrWhiteSpace(model.Acronym) || string.IsNullOrWhiteSpace(model.Rev) || string.IsNullOrWhiteSpace(model.Id))
+            {
+                return BadRequest();
+            }
+            Task<ICouchDBAcronymModel> result = _modifyService.Edit(model);
             return Ok(result);
         }
     }
