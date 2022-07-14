@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using AlphabetSoup.Models;
 using System.Text.Json.Nodes;
 using Newtonsoft.Json.Linq;
+using AlphabetSoup.Services;
 
 namespace AlphabetSoup.Client
 {
@@ -22,6 +23,7 @@ namespace AlphabetSoup.Client
 
         public async Task<ICouchDBAcronymModel> Insert(IAcronymModel model)
         {
+            
             CouchDBAcronymModel response = new CouchDBAcronymModel();
             Guid g = Guid.NewGuid();
             HttpResponseMessage insertTask = await httpClient.PutAsync($"http://localhost:5984/alphabetsoup/{g}", JsonContent.Create(model));
@@ -30,18 +32,8 @@ namespace AlphabetSoup.Client
                 return null;
             }
             string result = insertTask.Content.ReadAsStringAsync().Result;
-            JObject jObject = JObject.Parse(result);
-            JToken jToken = jObject.GetValue("ok");
-            if (!jToken.Value<bool>())
-            {
-                return null;
-            }
-            response.Acronym = model.Acronym;
-            response.FullName = model.FullName;
-            response.Description = model.Description;
-            response.Id = jObject.GetValue("id").Value<string>();
-            response.Rev = jObject.GetValue("rev").Value<string>();
-            return response;
+            ModelJSONParseService parseService = new ModelJSONParseService();
+            return await parseService.JSONParse(result, model);
         }
 
         public async Task<ICouchDBDocsModel> Get(string search)

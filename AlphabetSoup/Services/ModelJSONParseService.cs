@@ -11,7 +11,7 @@ namespace AlphabetSoup.Services
     internal class ModelJSONParseService
     {
 
-        public async Task<ICouchDBAcronymModel> JSONParse(string result)
+        public async Task<ICouchDBAcronymModel> JSONParse(string result, IAcronymModel model)
         {
             CouchDBAcronymModel response = new CouchDBAcronymModel();
             JObject jObject = JObject.Parse(result);
