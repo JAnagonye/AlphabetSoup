@@ -12,17 +12,9 @@ namespace AlphabetSoup.Services
             this.httpClient = client;
         }
 
-        public bool Delete(IPurgeModel purgeModel)
+        public async Task<HttpResponseMessage> Delete(IPurgeModel purgeModel)
         {
-            if (purgeModel.Id == null || purgeModel.Rev == null)
-            {
-                return false;
-            }
-            else
-            {
-                httpClient.Purge(purgeModel);
-                return true;
-            }
+                return await httpClient.Purge(purgeModel);
         }
     }
 }

@@ -52,6 +52,26 @@ namespace AlphabetSoup.Client
             ""description""
                 ]
             }";
+            JObject selectorJObject = new JObject(
+                new JProperty("selector", 
+                    new JObject(
+                       new JProperty("acronym",
+                            new JObject(
+                                new JProperty("$regex", $"{search}")
+                                )
+                            )
+                       )
+                    ),
+                new JProperty("fields",
+                    new JArray(
+                        new JProperty("_id"),
+                        new JProperty("_rev"),
+                        new JProperty("acronym"),
+                        new JProperty("fullName"),
+                        new JProperty("description")
+                        )
+                    )
+                );
             StringContent selector = new StringContent(selectorJSON);
             selector.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             HttpResponseMessage searchTask = await httpClient.PostAsync("http://localhost:5984/alphabetsoup/_find", selector);
@@ -59,16 +79,21 @@ namespace AlphabetSoup.Client
             CouchDBDocsModel resultDocs = JsonConvert.DeserializeObject<CouchDBDocsModel>(searchValue);
             return resultDocs;
         }
-        public async void Purge(IPurgeModel purgeModel)
+        public async Task<HttpResponseMessage> Purge(IPurgeModel purgeModel)
         {
             string purgeJSON = @"{ "
             + $"\"{purgeModel.Id}\"" + @": [ "
             + $"\"{purgeModel.Rev}\"" +
                 @"]
             }";
+            JObject updateJObject = new JObject(
+                new JProperty($"{purgeModel.Id}",
+                new JArray($"{purgeModel.Rev}"))
+                );
             StringContent purge = new StringContent(purgeJSON);
             purge.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             HttpResponseMessage purgeTask = await httpClient.PostAsync("http://localhost:5984/alphabetsoup/_purge", purge);
+            return purgeTask;
         }
         public async Task<ICouchDBAcronymModel> Modify(CouchDBAcronymModel model)
         {
@@ -79,6 +104,13 @@ namespace AlphabetSoup.Client
             @", ""description"": " + $"\"{model.Description}\"" +
             @", ""_rev"": " + $"\"{model.Rev}\"" +
             @"}";
+
+            JObject updateJObject = new JObject(
+                new JProperty("acronym", $"{model.Acronym}"),
+                new JProperty("fullName", $"{model.FullName}"),
+                new JProperty("description", $"{model.Description}"),
+                new JProperty("_rev", $"{model.Rev}")
+                );
             StringContent update = new StringContent(updateJSON);
             HttpResponseMessage modifyTask = await httpClient.PutAsync("http://localhost:5984/alphabetsoup/" + $"{model.Id}", update);
             if (!modifyTask.IsSuccessStatusCode)

@@ -9,6 +9,6 @@ namespace AlphabetSoup.Services
 {
     public interface IPurgeService
     {
-        bool Delete(IPurgeModel purgeModel);
+        Task<HttpResponseMessage> Delete(IPurgeModel purgeModel);
     }
 }

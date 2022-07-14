@@ -1,4 +1,5 @@
-﻿using AlphabetSoup.Services;
+﻿using AlphabetSoup.Models;
+using AlphabetSoup.Services;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -19,13 +20,13 @@ namespace WebAlphabetSoup.Controllers
         }
         // Delete api/<PurgeServiceController> Refer to CouchDB for PurgeJson Link = "http://localhost:5984/alphabetsoup/_purge", purge 
         [HttpDelete("{exactID}, {exactRev}")]
-        public void Delete(string exactID, string exactRev)
+        public async Task DeleteAsync(IPurgeModel purgeModel)
         {
-            if (exactID == null || exactRev == null)
+            if (purgeModel.Id == null || purgeModel.Rev == null)
             {
                 return;
             }
-            _purgeService.Delete(exactID, exactRev);
+            await _purgeService.Delete(purgeModel);      
         }
     }
 }
