@@ -19,8 +19,8 @@ namespace WebAlphabetSoup.Controllers
             _purgeService = purge;
         }
         // Delete api/<PurgeServiceController> Refer to CouchDB for PurgeJson Link = "http://localhost:5984/alphabetsoup/_purge", purge 
-        [HttpDelete("{exactID}, {exactRev}")]
-        public async Task DeleteAsync(IPurgeModel purgeModel)
+        [HttpDelete]
+        public async Task DeleteAsync([FromBody]PurgeModel purgeModel)
         {
             if (purgeModel.Id == null || purgeModel.Rev == null)
             {

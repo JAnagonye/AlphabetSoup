@@ -1,4 +1,5 @@
 ﻿using AlphabetSoup.Models;
+using AlphabetSoup.Models.Interfaces;
 
 namespace AlphabetSoup.Client
 {

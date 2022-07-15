@@ -10,6 +10,7 @@ using AlphabetSoup.Models;
 using System.Text.Json.Nodes;
 using Newtonsoft.Json.Linq;
 using AlphabetSoup.Services;
+using AlphabetSoup.Models.Interfaces;
 
 namespace AlphabetSoup.Client
 {
@@ -38,22 +39,22 @@ namespace AlphabetSoup.Client
 
         public async Task<ICouchDBDocsModel> Get(string search)
         {
-            string selectorJSON = @"{
-            ""selector"": {
-            ""acronym"": { 
-                ""$regex"": " + $"\"{search}\"" +
-                    @"}
-                },
-            ""fields"": [
-            ""_id"",
-            ""_rev"",
-            ""acronym"", 
-            ""fullName"", 
-            ""description""
-                ]
-            }";
+            //string selectorJSON = @"{
+            //""selector"": {
+            //""acronym"": { 
+            //    ""$regex"": " + $"\"{search}\"" +
+            //        @"}
+            //    },
+            //""fields"": [
+            //""_id"",
+            //""_rev"",
+            //""acronym"", 
+            //""fullName"", 
+            //""description""
+            //    ]
+            //}";
             JObject selectorJObject = new JObject(
-                new JProperty("selector", 
+                new JProperty("selector",
                     new JObject(
                        new JProperty("acronym",
                             new JObject(
@@ -64,15 +65,18 @@ namespace AlphabetSoup.Client
                     ),
                 new JProperty("fields",
                     new JArray(
-                        new JProperty("_id"),
-                        new JProperty("_rev"),
-                        new JProperty("acronym"),
-                        new JProperty("fullName"),
-                        new JProperty("description")
+                        new JObject(
+                            new JProperty("_id"),
+                            new JProperty("_rev"),
+                            new JProperty("acronym"),
+                            new JProperty("fullName"),
+                            new JProperty("description")
+                            )
                         )
                     )
                 );
-            StringContent selector = new StringContent(selectorJSON);
+            string selectorJObjectString = selectorJObject.ToString();
+            StringContent selector = new StringContent(selectorJObjectString);
             selector.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             HttpResponseMessage searchTask = await httpClient.PostAsync("http://localhost:5984/alphabetsoup/_find", selector);
             string searchValue = searchTask.Content.ReadAsStringAsync().Result;
@@ -81,37 +85,31 @@ namespace AlphabetSoup.Client
         }
         public async Task<HttpResponseMessage> Purge(IPurgeModel purgeModel)
         {
-            string purgeJSON = @"{ "
-            + $"\"{purgeModel.Id}\"" + @": [ "
-            + $"\"{purgeModel.Rev}\"" +
-                @"]
-            }";
-            JObject updateJObject = new JObject(
+            JObject purgeJObject = new JObject(
                 new JProperty($"{purgeModel.Id}",
-                new JArray($"{purgeModel.Rev}"))
-                );
-            StringContent purge = new StringContent(purgeJSON);
+                new JArray($"{purgeModel.Rev}")
+                    )
+                )
+                ;
+            string purgeJObjectString = purgeJObject.ToString();
+            StringContent purge = new StringContent(purgeJObjectString);
             purge.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             HttpResponseMessage purgeTask = await httpClient.PostAsync("http://localhost:5984/alphabetsoup/_purge", purge);
+            string result = purgeTask.Content.ReadAsStringAsync().Result;
             return purgeTask;
         }
         public async Task<ICouchDBAcronymModel> Modify(CouchDBAcronymModel model)
         {
             CouchDBAcronymModel response = new CouchDBAcronymModel();
-            string updateJSON = @"{
-            ""acronym"": " + $"\"{model.Acronym}\"" +
-            @", ""fullName"": " + $"\"{model.FullName}\"" +
-            @", ""description"": " + $"\"{model.Description}\"" +
-            @", ""_rev"": " + $"\"{model.Rev}\"" +
-            @"}";
-
             JObject updateJObject = new JObject(
                 new JProperty("acronym", $"{model.Acronym}"),
                 new JProperty("fullName", $"{model.FullName}"),
                 new JProperty("description", $"{model.Description}"),
                 new JProperty("_rev", $"{model.Rev}")
                 );
-            StringContent update = new StringContent(updateJSON);
+            string updateJObjectString = updateJObject.ToString();
+            StringContent update = new StringContent(updateJObjectString);
+            update.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             HttpResponseMessage modifyTask = await httpClient.PutAsync("http://localhost:5984/alphabetsoup/" + $"{model.Id}", update);
             if (!modifyTask.IsSuccessStatusCode)
             {

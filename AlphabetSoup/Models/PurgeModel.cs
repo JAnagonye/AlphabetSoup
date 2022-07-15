@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AlphabetSoup.Models.Interfaces;
 using Newtonsoft.Json;
 
 namespace AlphabetSoup.Models

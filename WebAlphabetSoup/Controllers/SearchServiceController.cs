@@ -29,7 +29,7 @@ namespace WebAlphabetSoup.Controllers
             {
                 return BadRequest();
             }
-            Task<ICouchDBDocsModel> result =_searchService.Search(acronymSearch);
+            var result =_searchService.Search(acronymSearch);
             return Ok(result);
         }
     }

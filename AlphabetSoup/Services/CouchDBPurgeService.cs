@@ -1,6 +1,6 @@
 ﻿using System;
 using AlphabetSoup.Client;
-using AlphabetSoup.Models;
+using AlphabetSoup.Models.Interfaces;
 
 namespace AlphabetSoup.Services
 {
@@ -12,9 +12,9 @@ namespace AlphabetSoup.Services
             this.httpClient = client;
         }
 
-        public async Task<HttpResponseMessage> Delete(IPurgeModel purgeModel)
+        public async Task Delete(IPurgeModel purgeModel)
         {
-                return await httpClient.Purge(purgeModel);
+                await httpClient.Purge(purgeModel);
         }
     }
 }

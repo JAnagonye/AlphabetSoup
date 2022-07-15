@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AlphabetSoup.Client;
 using AlphabetSoup.Models;
+using AlphabetSoup.Models.Interfaces;
 using AlphabetSoup.Services;
 using Moq;
 
@@ -16,22 +17,20 @@ namespace AlphabetSoup.UnitTest
         public void Purge_WhenPurgeIsNull_ShouldReturnFalse()
         {
             Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
-            mock.Setup(x => x.Purge(It.IsAny<string>(), It.IsAny<string>())).Verifiable();
+            mock.Setup(x => x.Purge(It.IsAny<IPurgeModel>())).Verifiable();
             CouchDBPurgeService purgeServiceTest = new CouchDBPurgeService(mock.Object);
-            bool result = purgeServiceTest.Delete(null, null);
-            Assert.False(result);
-            mock.Verify(x => x.Purge(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            Task result = purgeServiceTest.Delete(null);
+            mock.Verify(x => x.Purge(It.IsAny<IPurgeModel>()), Times.Never);
         }
 
         [Fact]
         public void Purge_WhenPurgeIsAValidValue_ShouldReturnTrue()
         {
             Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
-            mock.Setup(x => x.Purge(It.IsAny<string>(), It.IsAny<string>())).Verifiable();
+            mock.Setup(x => x.Purge(It.IsAny<IPurgeModel>())).Verifiable();
             CouchDBPurgeService purgeServiceTest = new CouchDBPurgeService(mock.Object);
-            bool result = purgeServiceTest.Delete("TestID", "TestRev");
-            Assert.True(result);
-            mock.Verify(x => x.Purge(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            Task result = purgeServiceTest.Delete(new PurgeModel());
+            mock.Verify(x => x.Purge(It.IsAny<IPurgeModel>()), Times.Once);
         }
 
     }
