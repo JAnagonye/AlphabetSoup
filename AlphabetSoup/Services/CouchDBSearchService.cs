@@ -13,13 +13,13 @@ namespace AlphabetSoup.Services
             httpClient = client;
         }
 
-        public ICouchDBDocsModel Search(string search)
+        public async Task<ICouchDBDocsModel> Search(string search)
         {
             if (string.IsNullOrEmpty(search))
             {
                 return null;
             }
-            return httpClient.Get(search);
+            return await httpClient.Get(search);
         }
     }
 }

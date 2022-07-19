@@ -4,9 +4,9 @@ namespace AlphabetSoup.Client
 {
     public interface ICouchDBClient
     {
-        void Insert(IAcronymModel model);
-        void Purge(string id, string rev);
-        void Modify();
-        ICouchDBDocsModel Get(string search);
+        Task<ICouchDBAcronymModel> Insert(IAcronymModel model);
+        Task<IPurgeResponse> Purge(IPurgeModel purgeModel);
+        Task<ICouchDBAcronymModel> Modify(CouchDBAcronymModel model);
+        Task<ICouchDBDocsModel> Get(string search);
     }
 }

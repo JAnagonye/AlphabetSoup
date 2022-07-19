@@ -1,5 +1,6 @@
 ﻿using System;
 using AlphabetSoup.Client;
+using AlphabetSoup.Models;
 
 namespace AlphabetSoup.Services
 {
@@ -11,9 +12,14 @@ namespace AlphabetSoup.Services
             this.httpClient = client;
         }
 
-        public void Edit()
+        public async Task<ICouchDBAcronymModel> Edit(CouchDBAcronymModel model)
         {
-            httpClient.Modify();
+            if (model.Acronym.Length <= 10 && model.FullName.Length <= 100 && model.Description.Length <= 250
+                && !string.IsNullOrWhiteSpace(model.Acronym))
+            {
+                return await httpClient.Modify(model);
+            }
+            return null;
         }
     }
 }

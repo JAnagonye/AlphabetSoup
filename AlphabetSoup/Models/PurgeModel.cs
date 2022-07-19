@@ -8,9 +8,9 @@ using Newtonsoft.Json;
 
 namespace AlphabetSoup.Models
 {
-    public class CouchDBAcronymModel : AcronymModel, ICouchDBAcronymModel
+    public class PurgeModel : IPurgeModel
     {
         [JsonProperty("_id")] public string Id { get; set; }
         [JsonProperty("_rev")] public string Rev { get; set; }
-    };
+    }
 }

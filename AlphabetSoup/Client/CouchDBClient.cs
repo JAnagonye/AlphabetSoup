@@ -7,28 +7,37 @@ using System.Text;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using AlphabetSoup.Models;
+using System.Text.Json.Nodes;
+using Newtonsoft.Json.Linq;
+using AlphabetSoup.Services;
 
 namespace AlphabetSoup.Client
 {
     internal class CouchDBClient : ICouchDBClient
     {
-        HttpClient httpClient;
-        public CouchDBClient(HttpClient client)
+        private readonly HttpClient httpClient;
+        private readonly IParseJSONService _parseJSONService;
+        public CouchDBClient(HttpClient client, IParseJSONService parseJSONService)
         {
             httpClient = client;
+            _parseJSONService = parseJSONService;
         }
 
-        public void Insert(IAcronymModel model)
+        public async Task<ICouchDBAcronymModel> Insert(IAcronymModel model)
         {
+            
+            CouchDBAcronymModel response = new CouchDBAcronymModel();
             Guid g = Guid.NewGuid();
-            HttpResponseMessage nTask = httpClient.PostAsync($"http://localhost:5984/alphabetsoup/{g}", JsonContent.Create(model)).Result;
-            var couchDBModel = new CouchDBAcronymModel
+            HttpResponseMessage insertTask = await httpClient.PutAsync($"http://localhost:5984/alphabetsoup/{g}", JsonContent.Create(model));
+            if(!insertTask.IsSuccessStatusCode)
             {
-                Id = ""
-            };
+                return null;
+            }
+            string result = insertTask.Content.ReadAsStringAsync().Result;
+            return _parseJSONService.ParseAcronymModelResponse(result, model);
         }
 
-        public ICouchDBDocsModel Get(string search)
+        public async Task<ICouchDBDocsModel> Get(string search)
         {
             string selectorJSON = @"{
             ""selector"": {
@@ -44,27 +53,71 @@ namespace AlphabetSoup.Client
             ""description""
                 ]
             }";
+            JObject selectorJObject = new JObject(
+                new JProperty("selector",
+                    new JObject(
+                       new JProperty("acronym",
+                            new JObject(
+                                new JProperty("$regex", $"{search}")
+                                )
+                            )
+                       )
+                    ),
+                new JProperty("fields",
+                    new JArray(
+                        new JObject(
+                            new JProperty("_id"),
+                            new JProperty("_rev"),
+                            new JProperty("acronym"),
+                            new JProperty("fullName"),
+                            new JProperty("description")
+                            )
+                        )
+                    )
+                );
+            string selectorJObjectString = selectorJObject.ToString();
             StringContent selector = new StringContent(selectorJSON);
             selector.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            Task<HttpResponseMessage> searchTask = httpClient.PostAsync("http://localhost:5984/alphabetsoup/_find", selector);
-            string searchValue = searchTask.Result.Content.ReadAsStringAsync().Result;
+            HttpResponseMessage searchTask = await httpClient.PostAsync("http://localhost:5984/alphabetsoup/_find", selector);
+            string searchValue = searchTask.Content.ReadAsStringAsync().Result;
             CouchDBDocsModel resultDocs = JsonConvert.DeserializeObject<CouchDBDocsModel>(searchValue);
             return resultDocs;
         }
-        public void Purge(string id, string rev)
+        public async Task<IPurgeResponse> Purge(IPurgeModel purgeModel)
         {
-            string purgeJSON = @"{ "
-            + $"\"{id}\""  + @": [ "
-            + $"\"{rev}\"" +
-                @"]
-            }";
-            StringContent purge = new StringContent(purgeJSON);
+            JObject purgeJObject = new JObject(
+                new JProperty($"{purgeModel.Id}",
+                new JArray($"{purgeModel.Rev}")
+                    )
+                )
+                ;
+            string purgeJObjectString = purgeJObject.ToString();
+            StringContent purge = new StringContent(purgeJObjectString);
             purge.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            Task<HttpResponseMessage> purgeTask = httpClient.PostAsync("http://localhost:5984/alphabetsoup/_purge", purge);
+            HttpResponseMessage purgeTask = await httpClient.PostAsync("http://localhost:5984/alphabetsoup/_purge", purge);
+            string result = purgeTask.Content.ReadAsStringAsync().Result;
+            return _parseJSONService.ParsePurgeResponse(result, purgeModel);
         }
-        public void Modify()
+        public async Task<ICouchDBAcronymModel> Modify(CouchDBAcronymModel model)
         {
-
+            CouchDBAcronymModel response = new CouchDBAcronymModel();
+            JObject updateJObject = new JObject(
+                new JProperty("acronym", $"{model.Acronym}"),
+                new JProperty("fullName", $"{model.FullName}"),
+                new JProperty("description", $"{model.Description}"),
+                new JProperty("_rev", $"{model.Rev}")
+                );
+            string updateJObjectString = updateJObject.ToString();
+            StringContent update = new StringContent(updateJObjectString);
+            update.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            HttpResponseMessage modifyTask = await httpClient.PutAsync("http://localhost:5984/alphabetsoup/" + $"{model.Id}", update);
+            if (!modifyTask.IsSuccessStatusCode)
+            {
+                return null;
+            }
+            string result = modifyTask.Content.ReadAsStringAsync().Result;
+            ParseJSONService parseService = new ParseJSONService();
+            return parseService.ParseAcronymModelResponse(result, model);
         }
     }
 }

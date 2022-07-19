@@ -1,11 +1,14 @@
-﻿using AlphabetSoup.Services;
+﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using AlphabetSoup.Models;
+using AlphabetSoup.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebAlphabetSoup.Controllers
 {
-    [Route("alphabetsoup/_find")]
+    [Route("search")]
     [ApiController]
     public class SearchServiceController : ControllerBase
     {
@@ -17,26 +20,17 @@ namespace WebAlphabetSoup.Controllers
             _logger = logger;
             _searchService = search;
         }
-        // POST api/<SearchServiceController> Refer to CouchDBClient for selector, Link = "http://localhost:5984/alphabetsoup/_find", selector
-        [HttpPost]
-        public void Post([FromBody] string selector)
+
+        // GET: api/<SearchServiceController>
+        [HttpGet("{acronymSearch}")]
+        public async Task<IActionResult> GetAsync(string acronymSearch)
         {
-            
-            string selectorJSON = @"{
-            ""selector"": {
-            ""acronym"": { 
-                ""$regex"": " + $"\"{selector}\"" +
-                    @"}
-                },
-            ""fields"": [
-            ""_id"",
-            ""_rev"",
-            ""acronym"", 
-            ""fullName"", 
-            ""description""
-                ]
-            }";
-            _searchService.Search("G");
+            if(string.IsNullOrWhiteSpace(acronymSearch))
+            {
+                return BadRequest();
+            }
+            ICouchDBDocsModel result = await _searchService.Search(acronymSearch);
+            return Ok(result);
         }
     }
 }

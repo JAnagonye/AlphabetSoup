@@ -1,6 +1,6 @@
 ﻿using System;
 using AlphabetSoup.Client;
-
+using AlphabetSoup.Models;
 namespace AlphabetSoup.Services
 {
     internal sealed class CouchDBPurgeService : IPurgeService
@@ -11,17 +11,13 @@ namespace AlphabetSoup.Services
             this.httpClient = client;
         }
 
-        public bool Delete(string id, string rev)
+        public async Task<IPurgeResponse> Delete(IPurgeModel purgeModel)
         {
-            if (id == null || rev == null)
+            if(purgeModel == null)
             {
-                return false;
+                return null;
             }
-            else
-            {
-                httpClient.Purge(id, rev);
-                return true;
-            }
+            return await httpClient.Purge(purgeModel);
         }
     }
 }

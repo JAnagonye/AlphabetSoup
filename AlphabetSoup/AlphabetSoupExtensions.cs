@@ -7,6 +7,7 @@ using System.Net.Http;
 using AlphabetSoup.Client;
 using AlphabetSoup.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace AlphabetSoup
 {
@@ -18,6 +19,8 @@ namespace AlphabetSoup
             services.AddSingleton<IStorageService, CouchDBStorageService>();
             services.AddSingleton<ISearchService, CouchDBSearchService>();
             services.AddSingleton<IPurgeService, CouchDBPurgeService>();
+            services.AddSingleton<IModifyService, CouchDBModifyService>();
+            services.AddSingleton<IParseJSONService, ParseJSONService>();
             return services;
         }
 

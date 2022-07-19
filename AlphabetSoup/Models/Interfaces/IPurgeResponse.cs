@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace AlphabetSoup.Models
 {
-    public interface ICouchDBDocsModel
+    public interface IPurgeResponse
     {
-        public IEnumerable<ICouchDBAcronymModel> Docs { get; }
+        bool IsSuccess { get;  }
+        string ErrorMessage { get; }
+        IPurgeModel PurgeModel { get; }
     }
 }

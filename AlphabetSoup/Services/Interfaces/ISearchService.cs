@@ -4,6 +4,6 @@ namespace AlphabetSoup.Services
 {
     public interface ISearchService
     {
-        ICouchDBDocsModel Search(string search);
+        Task<ICouchDBDocsModel> Search(string search);
     }
 }
