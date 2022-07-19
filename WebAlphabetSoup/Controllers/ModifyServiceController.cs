@@ -19,14 +19,14 @@ namespace WebAlphabetSoup.Controllers
             _modifyService = modify;
         }
         // POST api/<ModifyServiceController>/[http://127.0.0.1:5984/database_name/document_id/ -d '{ "field" : "value", "_rev" : "revision id" }'  
-        [HttpPost]
-        public IActionResult Post([FromBody] CouchDBAcronymModel model)
+        [HttpPut]
+        public async Task<IActionResult> PutAsync([FromBody] CouchDBAcronymModel model)
         {
             if (string.IsNullOrWhiteSpace(model.Acronym) || string.IsNullOrWhiteSpace(model.Rev) || string.IsNullOrWhiteSpace(model.Id))
             {
                 return BadRequest();
             }
-            Task<ICouchDBAcronymModel> result = _modifyService.Edit(model);
+            ICouchDBAcronymModel result = await _modifyService.Edit(model);
             return Ok(result);
         }
     }

@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using AlphabetSoup.Client;
 using AlphabetSoup.Models;
-using AlphabetSoup.Models.Interfaces;
 using AlphabetSoup.Services;
 using Moq;
 
@@ -19,8 +18,9 @@ namespace AlphabetSoup.UnitTest
             Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
             mock.Setup(x => x.Purge(It.IsAny<IPurgeModel>())).Verifiable();
             CouchDBPurgeService purgeServiceTest = new CouchDBPurgeService(mock.Object);
-            Task result = purgeServiceTest.Delete(null);
+            Task<IPurgeResponse> result = purgeServiceTest.Delete(null);
             mock.Verify(x => x.Purge(It.IsAny<IPurgeModel>()), Times.Never);
+            Assert.Null(result.Result);
         }
 
         [Fact]
@@ -29,7 +29,8 @@ namespace AlphabetSoup.UnitTest
             Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
             mock.Setup(x => x.Purge(It.IsAny<IPurgeModel>())).Verifiable();
             CouchDBPurgeService purgeServiceTest = new CouchDBPurgeService(mock.Object);
-            Task result = purgeServiceTest.Delete(new PurgeModel());
+            Task<IPurgeResponse> result = purgeServiceTest.Delete(It.IsAny<IPurgeModel>());
+            Assert.NotNull(result.Result);
             mock.Verify(x => x.Purge(It.IsAny<IPurgeModel>()), Times.Once);
         }
 

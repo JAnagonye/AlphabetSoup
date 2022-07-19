@@ -23,13 +23,13 @@ namespace WebAlphabetSoup.Controllers
 
         // GET: api/<SearchServiceController>
         [HttpGet("{acronymSearch}")]
-        public IActionResult Get(string acronymSearch)
+        public async Task<IActionResult> GetAsync(string acronymSearch)
         {
             if(string.IsNullOrWhiteSpace(acronymSearch))
             {
                 return BadRequest();
             }
-            var result =_searchService.Search(acronymSearch);
+            ICouchDBDocsModel result = await _searchService.Search(acronymSearch);
             return Ok(result);
         }
     }

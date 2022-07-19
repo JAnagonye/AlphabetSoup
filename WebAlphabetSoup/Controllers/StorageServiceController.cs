@@ -21,9 +21,9 @@ namespace WebAlphabetSoup.Controllers
         }
         // POST api/<StorageServiceController> Link = $"http://localhost:5984/alphabetsoup/{g}"
         [HttpPost("{acronym}, {fullName}, {desc}")]
-        public IActionResult Post(string acronym, string fullName, string desc)
+        public async Task<IActionResult> PostAsync(string acronym, string fullName, string desc)
         {
-            Task<ICouchDBAcronymModel> result = _storageService.Store(acronym, fullName, desc);
+            ICouchDBAcronymModel result = await _storageService.Store(acronym, fullName, desc);
             return Ok(result);
         }
     }

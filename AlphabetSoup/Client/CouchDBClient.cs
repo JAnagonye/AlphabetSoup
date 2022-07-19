@@ -10,16 +10,17 @@ using AlphabetSoup.Models;
 using System.Text.Json.Nodes;
 using Newtonsoft.Json.Linq;
 using AlphabetSoup.Services;
-using AlphabetSoup.Models.Interfaces;
 
 namespace AlphabetSoup.Client
 {
     internal class CouchDBClient : ICouchDBClient
     {
-        HttpClient httpClient;
-        public CouchDBClient(HttpClient client)
+        private readonly HttpClient httpClient;
+        private readonly IParseJSONService _parseJSONService;
+        public CouchDBClient(HttpClient client, IParseJSONService parseJSONService)
         {
             httpClient = client;
+            _parseJSONService = parseJSONService;
         }
 
         public async Task<ICouchDBAcronymModel> Insert(IAcronymModel model)
@@ -33,26 +34,25 @@ namespace AlphabetSoup.Client
                 return null;
             }
             string result = insertTask.Content.ReadAsStringAsync().Result;
-            ModelJSONParseService parseService = new ModelJSONParseService();
-            return await parseService.JSONParse(result, model);
+            return _parseJSONService.ParseAcronymModelResponse(result, model);
         }
 
         public async Task<ICouchDBDocsModel> Get(string search)
         {
-            //string selectorJSON = @"{
-            //""selector"": {
-            //""acronym"": { 
-            //    ""$regex"": " + $"\"{search}\"" +
-            //        @"}
-            //    },
-            //""fields"": [
-            //""_id"",
-            //""_rev"",
-            //""acronym"", 
-            //""fullName"", 
-            //""description""
-            //    ]
-            //}";
+            string selectorJSON = @"{
+            ""selector"": {
+            ""acronym"": { 
+                ""$regex"": " + $"\"{search}\"" +
+                    @"}
+                },
+            ""fields"": [
+            ""_id"",
+            ""_rev"",
+            ""acronym"", 
+            ""fullName"", 
+            ""description""
+                ]
+            }";
             JObject selectorJObject = new JObject(
                 new JProperty("selector",
                     new JObject(
@@ -76,14 +76,14 @@ namespace AlphabetSoup.Client
                     )
                 );
             string selectorJObjectString = selectorJObject.ToString();
-            StringContent selector = new StringContent(selectorJObjectString);
+            StringContent selector = new StringContent(selectorJSON);
             selector.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             HttpResponseMessage searchTask = await httpClient.PostAsync("http://localhost:5984/alphabetsoup/_find", selector);
             string searchValue = searchTask.Content.ReadAsStringAsync().Result;
             CouchDBDocsModel resultDocs = JsonConvert.DeserializeObject<CouchDBDocsModel>(searchValue);
             return resultDocs;
         }
-        public async Task<HttpResponseMessage> Purge(IPurgeModel purgeModel)
+        public async Task<IPurgeResponse> Purge(IPurgeModel purgeModel)
         {
             JObject purgeJObject = new JObject(
                 new JProperty($"{purgeModel.Id}",
@@ -96,7 +96,7 @@ namespace AlphabetSoup.Client
             purge.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             HttpResponseMessage purgeTask = await httpClient.PostAsync("http://localhost:5984/alphabetsoup/_purge", purge);
             string result = purgeTask.Content.ReadAsStringAsync().Result;
-            return purgeTask;
+            return _parseJSONService.ParsePurgeResponse(result, purgeModel);
         }
         public async Task<ICouchDBAcronymModel> Modify(CouchDBAcronymModel model)
         {
@@ -116,18 +116,8 @@ namespace AlphabetSoup.Client
                 return null;
             }
             string result = modifyTask.Content.ReadAsStringAsync().Result;
-            JObject jObject = JObject.Parse(result);
-            JToken jToken = jObject.GetValue("ok");
-            if (!jToken.Value<bool>())
-            {
-                return null;
-            }
-            response.Acronym = model.Acronym;
-            response.FullName = model.FullName;
-            response.Description = model.Description;
-            response.Id = jObject.GetValue("id").Value<string>();
-            response.Rev = jObject.GetValue("rev").Value<string>();
-            return response;
+            ParseJSONService parseService = new ParseJSONService();
+            return parseService.ParseAcronymModelResponse(result, model);
         }
     }
 }

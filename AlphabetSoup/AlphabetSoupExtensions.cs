@@ -20,6 +20,7 @@ namespace AlphabetSoup
             services.AddSingleton<ISearchService, CouchDBSearchService>();
             services.AddSingleton<IPurgeService, CouchDBPurgeService>();
             services.AddSingleton<IModifyService, CouchDBModifyService>();
+            services.AddSingleton<IParseJSONService, ParseJSONService>();
             return services;
         }
 

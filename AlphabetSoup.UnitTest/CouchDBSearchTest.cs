@@ -15,20 +15,19 @@ namespace AlphabetSoup.UnitTest
             mock.Setup(x => x.Get(It.IsAny<string>())).Verifiable();
             CouchDBSearchService searchServiceTest = new CouchDBSearchService(mock.Object);
             Task<ICouchDBDocsModel> result = searchServiceTest.Search(null);
-            //Assert.Null(result);
+            Assert.Null(result.Result);
             mock.Verify(x => x.Get(It.IsAny<string>()), Times.Never);
         }
         [Fact]
         public void Search_WhenSearchIsHasValue_ShouldReturnValue()
         {
             Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
-            Task<ICouchDBDocsModel> couchDBAcronymModel = Mock.Of<Task<ICouchDBDocsModel>>();
-            mock.Setup(x => x.Get("TestAcro"))
-                             .Returns(couchDBAcronymModel);
+            ICouchDBDocsModel couchDBAcronymModel = Mock.Of<ICouchDBDocsModel>();
+            mock.Setup(x => x.Get("Test"));
             CouchDBSearchService searchServiceTest = new CouchDBSearchService(mock.Object);
-            var actual = searchServiceTest.Search("TestAcro");
-            //Assert.NotNull(actual);
-            mock.Verify(x => x.Get("TestAcro"), Times.Once);
+            Task<ICouchDBDocsModel> actual = searchServiceTest.Search("Test");
+            Assert.NotNull(actual);
+            mock.Verify(x => x.Get("Test"), Times.Once);
         }
         
     }

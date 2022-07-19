@@ -1,4 +1,4 @@
-﻿namespace AlphabetSoup.Models.Interfaces
+﻿namespace AlphabetSoup.Models
 {
     public interface IPurgeModel
     {
