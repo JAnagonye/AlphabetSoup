@@ -16,7 +16,8 @@ namespace AlphabetSoup.Services
 
         public async Task<ICouchDBAcronymModel> Store(string acronym, string fullName, string desc)
         {
-            if(acronym == null)
+            if (acronym.Length > 10 || fullName.Length > 100 || desc.Length > 250 
+                || string.IsNullOrWhiteSpace(acronym))
             {
                 return null;
             }
@@ -26,14 +27,7 @@ namespace AlphabetSoup.Services
                 FullName = fullName,
                 Description = desc
             };
-            if (acronym.Length <= 10 && fullName.Length <= 100 && desc.Length <= 250 
-                && Char.IsWhiteSpace(acronym, 0) == false )
-            {
-                return await httpClient.Insert(acronymModel);
-            } else
-            {
-                return null; 
-            }
+            return await httpClient.Insert(acronymModel);
         }
     }
 }
