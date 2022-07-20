@@ -41,14 +41,15 @@ namespace AlphabetSoup.UnitTest
         [Fact]
         public void Purge_WhenPurgeIsAValidValue_ShouldReturnValue()
         {
-            PurgeModel purgeModel = new PurgeModel();
-            purgeModel.Id = "an ID";
-            purgeModel.Rev = "an rev";
+            //PurgeModel purgeModel = new PurgeModel();
+            //purgeModel.Id = "an ID";
+            //purgeModel.Rev = "an rev";
+            IPurgeModel purgeModel = Mock.Of<IPurgeModel>();
             Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
-            mock.Setup(x => x.Purge(Mock.Of<PurgeModel>())).Returns(Task<IPurgeResponse>.FromResult(Mock.Of<IPurgeResponse>()));
+            mock.Setup(x => x.Purge(purgeModel)).Returns(Task<IPurgeResponse>.FromResult(Mock.Of<IPurgeResponse>()));
             CouchDBPurgeService purgeServiceTest = new CouchDBPurgeService(mock.Object);
             Task<IPurgeResponse> result = purgeServiceTest.Delete(purgeModel);
-            mock.Verify(x => x.Purge(Mock.Of<PurgeModel>()), Times.Once);
+            mock.Verify(x => x.Purge(purgeModel), Times.Once);
             Assert.NotNull(result.Result);
         }
 
