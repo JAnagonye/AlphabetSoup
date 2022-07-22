@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace AlphabetSoup.Services
 {
-    internal class CharacterLimitService
+    internal class CharacterLimitService : ICharacterLimitService
     {
-        public bool CharacterLimit(string acronym, string fullName, string desc)
+        public bool IsCharacterLimit(string acronym, string fullName, string desc)
         {
             if (acronym.Length > 10 || fullName.Length > 100 || desc.Length > 250)
             {

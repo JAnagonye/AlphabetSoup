@@ -14,14 +14,13 @@ namespace AlphabetSoup.Services
             httpClient = client;
         }
 
-        public async Task<ICouchDBAcronymModel> Store(string acronym, string fullName, string desc)
+        public async Task<ICouchDBAcronymModel> Store(string acronym, string fullName, string desc, ICharacterLimitService characterLimitService)
         {
-            CharacterLimitService characterLimitService = new CharacterLimitService();
             if (string.IsNullOrWhiteSpace(acronym))
             {
                 return null;
             }
-            if (!characterLimitService.CharacterLimit(acronym, fullName, desc))
+            if (!characterLimitService.IsCharacterLimit(acronym, fullName, desc))
             {
                 return null;
             }

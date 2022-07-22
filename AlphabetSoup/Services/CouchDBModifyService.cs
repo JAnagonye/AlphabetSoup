@@ -12,9 +12,8 @@ namespace AlphabetSoup.Services
             this.httpClient = client;
         }
 
-        public async Task<ICouchDBAcronymModel> Edit(CouchDBAcronymModel model)
+        public async Task<ICouchDBAcronymModel> Edit(CouchDBAcronymModel model, ICharacterLimitService characterLimitService)
         {
-            CharacterLimitService characterLimitService = new CharacterLimitService();
             if(model == null)
             {
                 return null;
@@ -23,7 +22,7 @@ namespace AlphabetSoup.Services
             {
                 return null;
             }
-            if (!characterLimitService.CharacterLimit(model.Acronym, model.FullName, model.Description))
+            if (!characterLimitService.IsCharacterLimit(model.Acronym, model.FullName, model.Description))
             {
                 return null;
             }
