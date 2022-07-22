@@ -113,18 +113,14 @@ namespace AlphabetSoup.UnitTest
         [Fact]
         public void ParsePurgeResponse_WhenRevIsNotValid_ShouldReturnErrorMessage()
         {
-
             JObject request = new JObject(
                 new JProperty("purge_seq", "null"),
                 new JProperty("purged",
                     new JObject(
                         new JProperty("id",
-                            new JArray(
-                                new JObject(
-                                    new JProperty("rev")))
-                    ))));
+                            new JArray("rev")))
+                    ));
             string requestString = request.ToString();
-            string requestResult = @"{""purge_seq"": ""null"", ""purged"": { ""id"" :[ ""rev""] }  }";
             PurgeModel model = Mock.Of<PurgeModel>(m => m.Id == "id" &&
             m.Rev == "invalid");
             ParseJSONService parseJSONServiceTest = new ParseJSONService();
@@ -146,12 +142,9 @@ namespace AlphabetSoup.UnitTest
                 new JProperty("purged",
                     new JObject(
                         new JProperty("id",
-                            new JArray(
-                                new JObject(
-                                    new JProperty("rev")))
-                    ))));
+                            new JArray("rev")))
+                    ));
             string requestString = request.ToString();
-            string requestResult = @"{""purge_seq"": ""null"", ""purged"": { ""id"" :[ ""rev""] }  }";
             PurgeModel model = Mock.Of<PurgeModel>(m => m.Id == "id" &&
             m.Rev == "rev");
             ParseJSONService parseJSONServiceTest = new ParseJSONService();

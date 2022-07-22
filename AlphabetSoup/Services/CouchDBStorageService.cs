@@ -16,11 +16,12 @@ namespace AlphabetSoup.Services
 
         public async Task<ICouchDBAcronymModel> Store(string acronym, string fullName, string desc)
         {
+            CharacterLimitService characterLimitService = new CharacterLimitService();
             if (string.IsNullOrWhiteSpace(acronym))
             {
                 return null;
             }
-            if (acronym.Length > 10 || fullName.Length > 100 || desc.Length > 250)
+            if (!characterLimitService.CharacterLimit(acronym, fullName, desc))
             {
                 return null;
             }
