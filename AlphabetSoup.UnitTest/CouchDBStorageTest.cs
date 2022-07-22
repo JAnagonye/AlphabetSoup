@@ -25,13 +25,19 @@ namespace AlphabetSoup.UnitTest
             mock.Verify(x => x.Insert(It.IsAny<IAcronymModel>()), Times.Never);
             Assert. Null(result.Result);
         }
-        [Fact]
-        public void Insert_WhenInsertHasAValueOverMaxCharacters_ShouldReturnNull()
+        [Theory]
+        [InlineData("LONGACRONYM", " full", "desc ")]
+        [InlineData("Acro", "Over 100 characters long                                                                                    ", "DESC ")]
+        [InlineData("A", "F ", "This is an attempt to make this message over 250 characters long                               " +
+            "                                             " +
+            "                                                   " +
+            "                                                                                                                                        ")]
+        public void Insert_WhenInsertHasAValueOverMaxCharacters_ShouldReturnNull(string acronym, string fullName, string desc)
         {
             Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
             mock.Setup(x => x.Insert(It.IsAny<AcronymModel>())).Verifiable();
             CouchDBStorageService storageServiceTest = new CouchDBStorageService(mock.Object);
-            Task<ICouchDBAcronymModel> result = storageServiceTest.Store("Very Long Test", "test", "test");
+            Task<ICouchDBAcronymModel> result = storageServiceTest.Store(acronym, fullName, desc);
             mock.Verify(x => x.Insert(It.IsAny<AcronymModel>()), Times.Never);
             Assert.Null(result.Result);
         }
