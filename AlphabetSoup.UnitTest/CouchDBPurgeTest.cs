@@ -28,9 +28,7 @@ namespace AlphabetSoup.UnitTest
         [InlineData(" ", " ")]
         public void Purge_WhenPurgeIdAndRevIsNull_ShouldReturnNull(string id, string rev)
         {
-            PurgeModel purgeModel = new PurgeModel();
-            purgeModel.Id = id;
-            purgeModel.Rev = rev;
+            IPurgeModel purgeModel = Mock.Of<IPurgeModel>(p => p.Id == id && p.Rev == rev);
             Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
             mock.Setup(x => x.Purge(It.IsAny<IPurgeModel>())).Verifiable();
             CouchDBPurgeService purgeServiceTest = new CouchDBPurgeService(mock.Object);
@@ -41,10 +39,7 @@ namespace AlphabetSoup.UnitTest
         [Fact]
         public void Purge_WhenPurgeIsAValidValue_ShouldReturnValue()
         {
-            //PurgeModel purgeModel = new PurgeModel();
-            //purgeModel.Id = "an ID";
-            //purgeModel.Rev = "an rev";
-            IPurgeModel purgeModel = Mock.Of<IPurgeModel>();
+            IPurgeModel purgeModel = Mock.Of<IPurgeModel>(p => p.Id == "an ID" && p.Rev == " an Rev");
             Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
             mock.Setup(x => x.Purge(purgeModel)).Returns(Task<IPurgeResponse>.FromResult(Mock.Of<IPurgeResponse>()));
             CouchDBPurgeService purgeServiceTest = new CouchDBPurgeService(mock.Object);

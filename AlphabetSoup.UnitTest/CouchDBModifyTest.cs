@@ -18,18 +18,55 @@ namespace AlphabetSoup.UnitTest
         [InlineData(" ", " ", " ")]
         public void Modify_WhenModifyIsEmpty_ShouldReturnNull(string acronym, string fullName, string desc)
         {
-            CouchDBAcronymModel inputModel = new CouchDBAcronymModel();
-            inputModel.Acronym = acronym;
-            inputModel.FullName = fullName;
-            inputModel.Description = desc;
-            inputModel.Id = It.IsAny<string>();
-            inputModel.Rev = It.IsAny<string>();
+            CouchDBAcronymModel inputModel = Mock.Of<CouchDBAcronymModel>(m => m.Acronym == acronym &&
+            m.FullName == fullName &&
+            m.Description == desc &&
+            m.Id == It.IsAny<string>() &&
+            m.Rev == It.IsAny<string>());
             Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
             mock.Setup(x => x.Modify(It.IsAny<CouchDBAcronymModel>())).Verifiable();
             CouchDBModifyService modifyServiceTest = new CouchDBModifyService(mock.Object);
             Task<ICouchDBAcronymModel> result = modifyServiceTest.Edit(inputModel);
-            Assert.Null(result);
+            Assert.Null(result.Result);
             mock.Verify(x => x.Modify(It.IsAny<CouchDBAcronymModel>()), Times.Never);  
+        }
+
+        [Fact]
+        public void Modify_WhenModelIsNull_ShouldReturnNull()
+        {
+            Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
+            mock.Setup(x => x.Modify(It.IsAny<CouchDBAcronymModel>())).Verifiable();
+            CouchDBModifyService modifyServiceTest = new CouchDBModifyService(mock.Object);
+            Task<ICouchDBAcronymModel> result = modifyServiceTest.Edit(null);
+            Assert.Null(result.Result);
+            mock.Verify(x => x.Modify(It.IsAny<CouchDBAcronymModel>()), Times.Never);
+        }
+        [Fact]
+        public void Modify_WhenAcronymIsValid_ShouldReturnNull()
+        {
+            CouchDBAcronymModel model = Mock.Of<CouchDBAcronymModel>(m => m.Acronym == "VeryLongAcronym");
+            Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
+            mock.Setup(x => x.Modify(It.IsAny<CouchDBAcronymModel>())).Verifiable();
+            CouchDBModifyService modifyServiceTest = new CouchDBModifyService(mock.Object);
+            Task<ICouchDBAcronymModel> result = modifyServiceTest.Edit(model);
+            Assert.Null(result.Result);
+            mock.Verify(x => x.Modify(It.IsAny<CouchDBAcronymModel>()), Times.Never);
+        }
+
+        [Fact]
+        public void Modify_WhenModelIsValid_ShouldReturnNotNull()
+        {
+            CouchDBAcronymModel model = Mock.Of<CouchDBAcronymModel>(m => m.Acronym == "anAcro" &&
+            m.FullName ==  "fullname"&&
+            m.Description == "desc" &&
+            m.Id == It.IsAny<string>() &&
+            m.Rev == It.IsAny<string>());
+            Mock<ICouchDBClient> mock = new Mock<ICouchDBClient>();
+            mock.Setup(x => x.Modify(model)).Returns(Task<ICouchDBAcronymModel>.FromResult(Mock.Of<ICouchDBAcronymModel>()));
+            CouchDBModifyService modifyServiceTest = new CouchDBModifyService(mock.Object);
+            Task<ICouchDBAcronymModel> result = modifyServiceTest.Edit(model);
+            mock.Verify(x => x.Modify(model), Times.Once);
+            Assert.NotNull(result.Result);
         }
     }
 }

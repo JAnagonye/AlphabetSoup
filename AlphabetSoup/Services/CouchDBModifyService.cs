@@ -14,19 +14,19 @@ namespace AlphabetSoup.Services
 
         public async Task<ICouchDBAcronymModel> Edit(CouchDBAcronymModel model)
         {
-            if (model == null)
+            if(model == null)
             {
                 return null;
             }
-            if(string.IsNullOrWhiteSpace(model.Acronym)|| string.IsNullOrWhiteSpace(model.FullName) || string.IsNullOrWhiteSpace(model.Description))
+            if (string.IsNullOrWhiteSpace(model.Acronym))
             {
                 return null;
             }
-            if (model.Acronym.Length <= 10 && model.FullName.Length <= 100 && model.Description.Length <= 250)
+            if (model.Acronym.Length > 10 || model.FullName.Length > 100 || model.Description.Length > 250)
             {
-                return await httpClient.Modify(model); 
+                return null;
             }
-            return null;
+            return await httpClient.Modify(model); 
         }
     }
 }

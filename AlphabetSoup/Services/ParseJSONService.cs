@@ -14,6 +14,10 @@ namespace AlphabetSoup.Services
 
         public ICouchDBAcronymModel ParseAcronymModelResponse(string result, IAcronymModel model)
         {
+            if(string.IsNullOrWhiteSpace(result) || model == null)
+            {
+                return null;
+            }
             CouchDBAcronymModel response = new CouchDBAcronymModel();
             JObject jObject = JObject.Parse(result);
             JToken jToken = jObject.GetValue("ok");
@@ -31,6 +35,10 @@ namespace AlphabetSoup.Services
 
         public IPurgeResponse ParsePurgeResponse(string result, IPurgeModel purgeModel)
         {
+            if (string.IsNullOrWhiteSpace(result) || purgeModel == null)
+            {
+                return null;
+            }
             PurgeResponse response = new PurgeResponse();
             response.PurgeModel = purgeModel;
             response.IsSuccess = false;

@@ -12,12 +12,10 @@ namespace WebAlphabetSoup.Controllers
     [ApiController]
     public class SearchServiceController : ControllerBase
     {
-        private readonly ILogger<SearchServiceController> _logger;
         private ISearchService _searchService;
 
-        public SearchServiceController(ILogger<SearchServiceController> logger, ISearchService search)
+        public SearchServiceController(ISearchService search)
         {
-            _logger = logger;
             _searchService = search;
         }
 
