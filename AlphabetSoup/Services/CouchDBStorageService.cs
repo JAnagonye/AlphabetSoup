@@ -2,19 +2,21 @@
 using System.Net.Http.Json;
 using AlphabetSoup.Client;
 using AlphabetSoup.Models;
-using AlphabetSoup.Services;
 
 namespace AlphabetSoup.Services
 {
     internal sealed class CouchDBStorageService : IStorageService
     {
-        ICouchDBClient httpClient;
-        public CouchDBStorageService(ICouchDBClient client)
+        private readonly ICouchDBClient httpClient;
+        private readonly ICharacterLimitService characterLimitService;
+
+        public CouchDBStorageService(ICouchDBClient httpClient, ICharacterLimitService characterLimitService)
         {
-            httpClient = client;
+            this.httpClient = httpClient;
+            this.characterLimitService = characterLimitService;
         }
 
-        public async Task<ICouchDBAcronymModel> Store(string acronym, string fullName, string desc, ICharacterLimitService characterLimitService)
+        public async Task<ICouchDBAcronymModel> Store(string acronym, string fullName, string desc)
         {
             if (string.IsNullOrWhiteSpace(acronym))
             {

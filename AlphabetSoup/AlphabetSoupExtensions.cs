@@ -21,6 +21,7 @@ namespace AlphabetSoup
             services.AddSingleton<IPurgeService, CouchDBPurgeService>();
             services.AddSingleton<IModifyService, CouchDBModifyService>();
             services.AddSingleton<IParseJSONService, ParseJSONService>();
+            services.AddSingleton<ICharacterLimitService, CharacterLimitService>();
             return services;
         }
 

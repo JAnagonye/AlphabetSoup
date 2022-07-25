@@ -6,13 +6,15 @@ namespace AlphabetSoup.Services
 {
     internal sealed class CouchDBModifyService : IModifyService
     {
-        ICouchDBClient httpClient;
-        public CouchDBModifyService(ICouchDBClient client)
+        private readonly ICouchDBClient httpClient;
+        private readonly ICharacterLimitService _characterLimitService;
+        public CouchDBModifyService(ICouchDBClient client, ICharacterLimitService characterLimitService)
         {
             this.httpClient = client;
+            _characterLimitService = characterLimitService;
         }
 
-        public async Task<ICouchDBAcronymModel> Edit(CouchDBAcronymModel model, ICharacterLimitService characterLimitService)
+        public async Task<ICouchDBAcronymModel> Edit(CouchDBAcronymModel model)
         {
             if(model == null)
             {
@@ -22,7 +24,7 @@ namespace AlphabetSoup.Services
             {
                 return null;
             }
-            if (!characterLimitService.IsCharacterLimit(model.Acronym, model.FullName, model.Description))
+            if (!_characterLimitService.IsCharacterLimit(model.Acronym, model.FullName, model.Description))
             {
                 return null;
             }

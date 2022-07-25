@@ -20,7 +20,7 @@ namespace WebAlphabetSoup.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync([FromBody]PurgeModel purgeModel)
         {
-            if(purgeModel == null)
+            if (purgeModel == null)
             {
                 return BadRequest();
             }

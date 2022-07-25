@@ -10,9 +10,11 @@ using AlphabetSoup.Models;
 using System.Text.Json.Nodes;
 using Newtonsoft.Json.Linq;
 using AlphabetSoup.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AlphabetSoup.Client
 {
+    [ExcludeFromCodeCoverage]
     internal class CouchDBClient : ICouchDBClient
     {
         private readonly HttpClient httpClient;
