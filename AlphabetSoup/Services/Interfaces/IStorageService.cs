@@ -1,6 +1,4 @@
-﻿
-
-using AlphabetSoup.Models;
+﻿using AlphabetSoup.Models;
 
 namespace AlphabetSoup.Services
 {

@@ -15,7 +15,7 @@ namespace AlphabetSoup.Services
 
         public async Task<ICouchDBDocsModel> Search(string search)
         {
-            if (string.IsNullOrEmpty(search))
+            if (string.IsNullOrWhiteSpace(search))
             {
                 return null;
             }

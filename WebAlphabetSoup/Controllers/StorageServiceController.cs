@@ -11,18 +11,20 @@ namespace WebAlphabetSoup.Controllers
     public class StorageServiceController : ControllerBase
     {
         private readonly IStorageService _storageService;
-        private readonly ILogger<StorageServiceController> _logger;
 
-        public StorageServiceController(ILogger<StorageServiceController> logger, IStorageService store)
+        public StorageServiceController(IStorageService store)
         {
             _storageService = store;
-            _logger = logger;
 
         }
         // POST api/<StorageServiceController> Link = $"http://localhost:5984/alphabetsoup/{g}"
         [HttpPost("{acronym}, {fullName}, {desc}")]
         public async Task<IActionResult> PostAsync(string acronym, string fullName, string desc)
         {
+            if (string.IsNullOrWhiteSpace(acronym) || string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(desc))
+            {
+                return BadRequest();
+            }
             ICouchDBAcronymModel result = await _storageService.Store(acronym, fullName, desc);
             return Ok(result);
         }

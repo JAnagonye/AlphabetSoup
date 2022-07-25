@@ -10,19 +10,21 @@ namespace WebAlphabetSoup.Controllers
     [ApiController]
     public class PurgeServiceController : ControllerBase
     {
-        private readonly ILogger<PurgeServiceController> _logger;
         private IPurgeService _purgeService;
 
-        public PurgeServiceController(ILogger<PurgeServiceController> logger, IPurgeService purge)
+        public PurgeServiceController(IPurgeService purge)
         {
-            _logger = logger;
             _purgeService = purge;
         }
         // Delete api/<PurgeServiceController> Refer to CouchDB for PurgeJson Link = "http://localhost:5984/alphabetsoup/_purge", purge 
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync([FromBody]PurgeModel purgeModel)
         {
-            if (purgeModel.Id == null || purgeModel.Rev == null)
+            if (purgeModel == null)
+            {
+                return BadRequest();
+            }
+            if (string.IsNullOrWhiteSpace(purgeModel.Rev) || string.IsNullOrWhiteSpace(purgeModel.Id))
             {
                 return BadRequest();
             }

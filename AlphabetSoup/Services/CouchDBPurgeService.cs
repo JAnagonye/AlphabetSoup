@@ -13,7 +13,7 @@ namespace AlphabetSoup.Services
 
         public async Task<IPurgeResponse> Delete(IPurgeModel purgeModel)
         {
-            if(purgeModel == null)
+            if(purgeModel == null || string.IsNullOrWhiteSpace(purgeModel.Id)|| string.IsNullOrWhiteSpace(purgeModel.Rev))
             {
                 return null;
             }

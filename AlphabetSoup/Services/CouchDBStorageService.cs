@@ -2,21 +2,27 @@
 using System.Net.Http.Json;
 using AlphabetSoup.Client;
 using AlphabetSoup.Models;
-using AlphabetSoup.Services;
 
 namespace AlphabetSoup.Services
 {
     internal sealed class CouchDBStorageService : IStorageService
     {
-        ICouchDBClient httpClient;
-        public CouchDBStorageService(ICouchDBClient client)
+        private readonly ICouchDBClient httpClient;
+        private readonly ICharacterLimitService characterLimitService;
+
+        public CouchDBStorageService(ICouchDBClient httpClient, ICharacterLimitService characterLimitService)
         {
-            httpClient = client;
+            this.httpClient = httpClient;
+            this.characterLimitService = characterLimitService;
         }
 
         public async Task<ICouchDBAcronymModel> Store(string acronym, string fullName, string desc)
         {
-            if(acronym == null)
+            if (string.IsNullOrWhiteSpace(acronym))
+            {
+                return null;
+            }
+            if (!characterLimitService.IsCharacterLimit(acronym, fullName, desc))
             {
                 return null;
             }
@@ -26,14 +32,7 @@ namespace AlphabetSoup.Services
                 FullName = fullName,
                 Description = desc
             };
-            if (acronym.Length <= 10 && fullName.Length <= 100 && desc.Length <= 250 
-                && Char.IsWhiteSpace(acronym, 0) == false )
-            {
-                return await httpClient.Insert(acronymModel);
-            } else
-            {
-                return null; 
-            }
+            return await httpClient.Insert(acronymModel);
         }
     }
 }

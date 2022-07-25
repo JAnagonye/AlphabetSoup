@@ -10,18 +10,20 @@ namespace WebAlphabetSoup.Controllers
     [ApiController]
     public class ModifyServiceController : ControllerBase
     {
-        private readonly ILogger<ModifyServiceController> _logger;
         private IModifyService _modifyService;
 
-        public ModifyServiceController(ILogger<ModifyServiceController> logger, IModifyService modify)
+        public ModifyServiceController(IModifyService modify)
         {
-            _logger = logger;
             _modifyService = modify;
         }
         // POST api/<ModifyServiceController>/[http://127.0.0.1:5984/database_name/document_id/ -d '{ "field" : "value", "_rev" : "revision id" }'  
         [HttpPut]
         public async Task<IActionResult> PutAsync([FromBody] CouchDBAcronymModel model)
         {
+            if(model == null)
+            {
+                return BadRequest();
+            }
             if (string.IsNullOrWhiteSpace(model.Acronym) || string.IsNullOrWhiteSpace(model.Rev) || string.IsNullOrWhiteSpace(model.Id))
             {
                 return BadRequest();

@@ -10,9 +10,11 @@ using AlphabetSoup.Models;
 using System.Text.Json.Nodes;
 using Newtonsoft.Json.Linq;
 using AlphabetSoup.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AlphabetSoup.Client
 {
+    [ExcludeFromCodeCoverage]
     internal class CouchDBClient : ICouchDBClient
     {
         private readonly HttpClient httpClient;
@@ -39,20 +41,6 @@ namespace AlphabetSoup.Client
 
         public async Task<ICouchDBDocsModel> Get(string search)
         {
-            string selectorJSON = @"{
-            ""selector"": {
-            ""acronym"": { 
-                ""$regex"": " + $"\"{search}\"" +
-                    @"}
-                },
-            ""fields"": [
-            ""_id"",
-            ""_rev"",
-            ""acronym"", 
-            ""fullName"", 
-            ""description""
-                ]
-            }";
             JObject selectorJObject = new JObject(
                 new JProperty("selector",
                     new JObject(
@@ -76,7 +64,7 @@ namespace AlphabetSoup.Client
                     )
                 );
             string selectorJObjectString = selectorJObject.ToString();
-            StringContent selector = new StringContent(selectorJSON);
+            StringContent selector = new StringContent(selectorJObjectString);
             selector.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             HttpResponseMessage searchTask = await httpClient.PostAsync("http://localhost:5984/alphabetsoup/_find", selector);
             string searchValue = searchTask.Content.ReadAsStringAsync().Result;
