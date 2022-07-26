@@ -52,14 +52,7 @@ namespace AlphabetSoup.Client
                        )
                     ),
                 new JProperty("fields",
-                    new JArray(
-                        new JObject(
-                            new JProperty("_id"),
-                            new JProperty("_rev"),
-                            new JProperty("acronym"),
-                            new JProperty("fullName"),
-                            new JProperty("description")
-                            )
+                    new JArray("_id", "_rev", "acronym", "fullName", "description"
                         )
                     )
                 );

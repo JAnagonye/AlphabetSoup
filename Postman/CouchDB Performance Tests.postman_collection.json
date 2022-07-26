@@ -1,0 +1,138 @@
+{
+	"info": {
+		"_postman_id": "9c077449-5772-4707-9521-32a1473fc520",
+		"name": "CouchDB Performance Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Acronyms",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var uuid = require('uuid');\r",
+							"\r",
+							"var chars = \"abcdefghijklmnopqrstuvwxyz0123456789\";\r",
+							"var charCount = chars.length;\r",
+							"\r",
+							"var minAcronymLength = 2;\r",
+							"var maxAcronymLength = 5;\r",
+							"\r",
+							"var url = pm.environment.get(\"put_url\");\r",
+							"if(!url || url.length === 0)\r",
+							"{\r",
+							"    throw new Error(\"Error - did not set the 'put_url' variable in the environment config\")\r",
+							"}\r",
+							"\r",
+							"var max = pm.environment.get(\"records_to_generate\");\r",
+							"if(!max || max === 0)\r",
+							"{\r",
+							"    throw new Error(\"Error - did not set the 'records_to_generate' variable in the environment config\")\r",
+							"}\r",
+							"\r",
+							"var auth = pm.environment.get('authorization');\r",
+							"if(!auth || auth.length === 0)\r",
+							"{\r",
+							"    throw new Error(\"Error - `authorization` environment variable not set\")\r",
+							"}\r",
+							"\r",
+							"console.log(`Generating ${max} acronyms to url: ${url}`);\r",
+							"\r",
+							"sendAllRequests(max, url);\r",
+							"\r",
+							"function sendAllRequests(count, url)\r",
+							"{\r",
+							"    var current = 0;\r",
+							"\r",
+							"    while(current < count)\r",
+							"    {        \r",
+							"        sendSingleRequest(url);\r",
+							"        current++;\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"function sendSingleRequest(putUrl){ \r",
+							"    var acronym = generateRandomAcronym();\r",
+							"\r",
+							"    var data = {\r",
+							"        acronym: acronym,\r",
+							"        description: \"automatically generated  description\",\r",
+							"        fullName: \"Test Full Name\"\r",
+							"    };\r",
+							"\r",
+							"    var putRequest = {\r",
+							"        url: putUrl + '/' + uuid.v4(),\r",
+							"        method: 'PUT',\r",
+							"        header: {'Content-Type': 'application/json', authorization: auth},\r",
+							"        body: {\r",
+							"            mode: 'raw',\r",
+							"            raw: JSON.stringify(data)\r",
+							"        }\r",
+							"    };\r",
+							"    \r",
+							"    pm.sendRequest(putRequest, (error, response) =>\r",
+							"    {\r",
+							"        if(!error)\r",
+							"        {\r",
+							"            var resp = response.json();\r",
+							"            console.log(resp);\r",
+							"\r",
+							"            pm.expect(resp).to.have.property('ok', true);\r",
+							"        }\r",
+							"\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"function generateRandomAcronym(){\r",
+							"    var acronymLength = Math.floor(Math.random() * (maxAcronymLength - minAcronymLength) + minAcronymLength);\r",
+							"\r",
+							"    var acronym = \"\";\r",
+							"\r",
+							"    var currentChar = 1;\r",
+							"    while (currentChar <= acronymLength)\r",
+							"    { \r",
+							"        var index = Math.floor(Math.random() * charCount);\r",
+							"        acronym += chars.charAt(index);\r",
+							"        currentChar++;\r",
+							"    }\r",
+							"    return acronym;\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{put_url}}/_all_docs",
+					"host": [
+						"{{put_url}}"
+					],
+					"path": [
+						"_all_docs"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
