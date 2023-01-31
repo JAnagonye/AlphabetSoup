@@ -46,7 +46,7 @@ namespace AlphabetSoup.Client
                     new JObject(
                        new JProperty("acronym",
                             new JObject(
-                                new JProperty("$regex", $"{search}")
+                                new JProperty("$eq", $"{search}")
                                 )
                             )
                        )
